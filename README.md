@@ -4,7 +4,9 @@
 
 ### ▶️ [**Play it now →**](https://javamomma.github.io/Carls-Dash/)
 
-![Carl's Doorway Dash gameplay](docs/screenshot.png)
+![Carl's Doorway Dash gameplay](docs/gameplay.gif)
+
+![Carl's Doorway Dash screenshot](docs/screenshot.png)
 
 ---
 
