@@ -123,21 +123,21 @@ G.draw=function(){baseDraw.call(this);if(this.state!=='RUNNING'&&this.state!=='T
  if(this.slowmo>0){ctx.fillStyle='rgba(150,180,255,.13)';ctx.fillRect(0,0,480,854)}
  if(this.shieldTime>0){ctx.save();ctx.strokeStyle='#9fe6ff';ctx.lineWidth=3;ctx.globalAlpha=.5+Math.sin(this.time*10)*.3;ctx.beginPath();ctx.arc(this.player.x+24,this.player.y+30,42,0,7);ctx.stroke();ctx.restore()}
  if(this.proj){ctx.save();ctx.globalAlpha=.5;ctx.fillStyle='#ffb3e6';ctx.fillRect(this.player.x,this.proj.y-3,this.proj.x-this.player.x,6);ctx.globalAlpha=1;ctx.translate(this.proj.x,this.proj.y);ctx.rotate(this.proj.spin);ctx.drawImage(SpriteFactory.donut,-20,-18,40,36);ctx.restore()}
- for(let i=0;i<24;i++){let cx=(i*21+(this.time*18)%21)-12,b=(i+((this.time*3)|0))%2;ctx.globalAlpha=.32+this.hype*.58;ctx.fillStyle=['#c46b6b','#6bc48f','#c4bd6b','#a06bc4'][i%4];ctx.fillRect(cx,46+b*2,14,10)}ctx.globalAlpha=1;
+ for(let i=0;i<24;i++){let cx=(i*21+(this.time*18)%21)-12,b=(i+((this.time*3)|0))%2;ctx.globalAlpha=.32+this.hype*.58;ctx.fillStyle=['#c46b6b','#6bc48f','#c4bd6b','#a06bc4'][i%4];ctx.fillRect(cx,4+b*2,14,8)}ctx.globalAlpha=1;
  ctx.fillStyle='#080c14c9';ctx.fillRect(124,60,232,40);ctx.strokeStyle=this.footFocus>0?'#fff079':'#d6b652';ctx.strokeRect(124,60,232,40);
  ctx.fillStyle='#2b3140';ctx.fillRect(132,70,102,7);ctx.fillStyle=this.momentum>=50?'#ffd257':'#f2a93b';ctx.fillRect(132,70,102*this.momentum/100,7);
  ctx.fillStyle='#7fd2ff';ctx.fillRect(132+Math.round(102*.2),68,1,11);ctx.fillStyle='#8fe6ff';ctx.fillRect(132+Math.round(102*.5),67,2,13);
  ctx.fillStyle='#2b3140';ctx.fillRect(248,70,100,7);ctx.fillStyle=this.footFocus>0?'#fff079':'#8de58d';ctx.fillRect(248,70,100*this.footwork/100,7);
  ctx.fillStyle='#fff5bd';ctx.font='9px monospace';ctx.fillText('DASH'+(this.momentum>=50?' ●':''),132,89);ctx.fillText(this.focusReady?'FOCUS READY':this.footFocus>0?'FOCUS!':'FOOTWORK',248,89);
- if(this.combo>=3){ctx.fillStyle='#ffd257';ctx.font='bold 11px monospace';ctx.fillText('COMBO x'+this.combo+'   SCORE ×'+(this.scoreMult||1).toFixed(1),132,56)}
+ if(this.combo>=3){ctx.fillStyle='#ffd257';ctx.textAlign='right';ctx.font='bold 11px monospace';ctx.fillText('COMBO x'+this.combo,470,114);ctx.font='9px monospace';ctx.fillText('SCORE ×'+(this.scoreMult||1).toFixed(1),470,125);ctx.textAlign='left'}
  if(this.objective){ctx.fillStyle='#131b27df';ctx.fillRect(103,104,274,22);ctx.fillStyle=this.objective.done?'#8de58d':'#e8e3bf';ctx.font='10px monospace';ctx.fillText((this.objective.done?'✓ ':'BONUS: ')+this.objective.name+'  '+this.objective.n+'/'+this.objective.need,113,119)}
  if(this.setpiece){ctx.fillStyle='#f5d55b';ctx.font='bold 12px monospace';ctx.fillText('⚠ '+this.setpiece+' ⚠',145,146)}
  ctx.fillStyle=((this.time*2)|0)%2?'#ff4d4d':'#7a2020';ctx.beginPath();ctx.arc(360,20,5,0,7);ctx.fill();ctx.fillStyle='#ffdede';ctx.font='bold 10px monospace';ctx.fillText('LIVE',368,24);
  if(this.state==='TRANSITION'){let e=this.escape||0;ctx.fillStyle='#0a0f18cc';ctx.fillRect(90,286,300,32);ctx.strokeStyle='#ffe27a';ctx.strokeRect(90,286,300,32);ctx.fillStyle='#3a2e22';ctx.fillRect(96,308,288,8);ctx.fillStyle='#8de58d';ctx.fillRect(96,308,288*e/100,8);ctx.fillStyle='#ffe27a';ctx.font='bold 13px monospace';ctx.textAlign='center';ctx.fillText('TAP FAST — RUN TO THE EXIT  '+Math.floor(e)+'%',240,303);ctx.textAlign='left'}
- if(this.feetCam>0){ctx.fillStyle='#000';ctx.fillRect(0,0,480,56);ctx.fillRect(0,798,480,56);ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(this.player.x-6,CFG.ground-16,60,24);ctx.fillStyle=((this.time*3)|0)%2?'#ff4d4d':'#600';ctx.beginPath();ctx.arc(26,28,6,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 12px monospace';ctx.fillText('● FEET CAM',40,33)}
+ if(this.feetCam>0){ctx.fillStyle='#000';ctx.fillRect(0,0,480,8);ctx.fillRect(0,798,480,56);ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(this.player.x-6,CFG.ground-16,60,24);ctx.fillStyle=((this.time*3)|0)%2?'#ff4d4d':'#600';ctx.beginPath();ctx.arc(300,826,6,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 12px monospace';ctx.fillText('FEET CAM',314,831)}
  if(this.texts)this.texts.forEach(tx=>{ctx.globalAlpha=Math.max(0,tx.life);ctx.fillStyle=tx.col;ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText(tx.t,tx.x,tx.y);ctx.textAlign='left';ctx.globalAlpha=1});
  if(Save.data.settings&&Save.data.settings.contrast){ctx.strokeStyle='#ff2d2d';ctx.lineWidth=2;obstacles.each(o=>{let yy=o.type==='pit'?703:o.type==='branch'?548:o.type==='blade'?o.y:o.type==='flame'?CFG.ground-100:(o.type==='tunnel'||o.type==='crusher')?o.y:708-o.h,hh=o.type==='pit'?30:o.type==='branch'?70:o.type==='blade'?100:o.type==='flame'?100:o.h;ctx.strokeRect(o.x,yy,o.w,hh)})}
- if((this.hp||9)<=1){let a=.16+Math.sin(this.time*6)*.08;ctx.globalAlpha=Math.max(0,a);ctx.fillStyle='#cc1111';ctx.fillRect(0,0,480,54);ctx.fillRect(0,800,480,54);ctx.fillRect(0,0,16,854);ctx.fillRect(464,0,16,854);ctx.globalAlpha=1}
+ if((this.hp||9)<=1){let a=.16+Math.sin(this.time*6)*.08;ctx.globalAlpha=Math.max(0,a);ctx.fillStyle='#cc1111';ctx.fillRect(0,0,480,12);ctx.fillRect(0,800,480,54);ctx.fillRect(0,0,16,854);ctx.fillRect(464,0,16,854);ctx.globalAlpha=1}
  ctx.restore()};
 // ESCAPE SPRINT + CONTEXTUAL COACHING
 G.scramble=function(){if(this.state!=='TRANSITION')return;this.escape=Math.min(100,(this.escape||0)+5.5);this.collapse=Math.max(-45,this.collapse-9);this.player.jump();this.view+=8;burst(this.player.x+6,CFG.ground-12,'#ffd27a',6);Audio.tone(300+(this.escape||0)*4,.06,'square',.04)};
@@ -213,4 +213,11 @@ function renderTitleBests(){let eb=Save.data.expBest||{screens:0,score:0};$('exp
 // showTitle is a hoisted declaration: rebinding it catches every by-name caller (quit, closeShop); overTitle captured the old reference and is rebound here.
 const baseShowTitle=showTitle;showTitle=function(){baseShowTitle();renderTitleBests()};$('overTitle').onclick=showTitle;renderTitleBests();
 $('dashBtn').onclick=()=>{Audio.init();G.startMode('dash')};$('expBtn').onclick=()=>{Audio.init();G.startMode('expedition')};
+// ROCK-SOLID LOOP (P13) — pause/resume keeps the live state. Resuming a pause taken mid-collapse used to force RUNNING, which re-entered TRANSITION on the next tick and restarted the escape sprint.
+const p13Update=G.update;G.update=function(dt){p13Update.call(this,dt);if(this.state==='RUNNING'||this.state==='TRANSITION')this.lastLive=this.state};
+const p13Start=G.start;G.start=function(){p13Start.call(this);this.lastLive='RUNNING';this.pausedFrom=null};
+$('pause').onclick=()=>{if(G.state==='RUNNING'||G.state==='TRANSITION'){G.pausedFrom=G.state;G.state='PAUSED';$('pauseMenu').style.display='flex'}};
+$('resume').onclick=()=>{if(G.state!=='PAUSED')return;G.state=G.pausedFrom==='TRANSITION'?'TRANSITION':'RUNNING';G.pausedFrom=null;$('pauseMenu').style.display='none'};
+// The auto-pause listener above has already set PAUSED by the time this one runs; remember what it interrupted from the last live tick.
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&G.state==='PAUSED'&&!G.pausedFrom)G.pausedFrom=G.lastLive||'RUNNING'});
 </script></body></html>
