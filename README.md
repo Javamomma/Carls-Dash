@@ -1,6 +1,6 @@
 # 🍩 Carl's Doorway Dash
 
-**A chaotic one-thumb endless runner where a barefoot game-show contestant sprints through a collapsing jungle dungeon.** No installs, no accounts, no dependencies — it's a single HTML file. Just tap to play.
+**A chaotic one-thumb jungle runner where a barefoot game-show contestant sprints through a collapsing dungeon — endless, or on a fixed 32-screen Pitfall-style expedition.** No installs, no accounts, no dependencies — it's a single HTML file. Just tap to play.
 
 ### ▶️ [**Play it now →**](https://javamomma.github.io/Carls-Dash/)
 
@@ -18,6 +18,7 @@ It's built to be **grabbed and played in ten seconds** on a phone — portrait, 
 
 ## Features
 
+- 🗺️ **Two episodes** — DASH, the endless collapsing-floor run, and EXPEDITION, a fixed 32-screen jungle course generated from a constant seed (same route every time, so learn it), with a numbered `SCREEN n/32` HUD, signposts on the ground, and a golden EXIT to reach. Each mode keeps its own best on the title screen.
 - 🏃 **Deep one-thumb move set** — jump, slide, double-tap dive-kick (with a chaining ground-slam), swipe-up dash hop, and airborne vine grabs.
 - ❤️ **Health bar** — trap hits cost hearts, not the whole run; clear a floor to heal.
 - 🎯 **Bonus reels & hazard reels** — rotating objectives (stomp lines, vine runs, idol hunts) and timed setpieces (log stampede, crocodile causeway, vine gauntlet).
@@ -31,6 +32,7 @@ It's built to be **grabbed and played in ten seconds** on a phone — portrait, 
 
 | Input | Action |
 |-------|--------|
+| **Title screen** | Pick **DASH (ENDLESS)** or **EXPEDITION** (tapping anywhere else starts Dash) |
 | **Tap** | Jump (tap again in air for double/triple jump if unlocked) |
 | **Swipe down** | Slide |
 | **Double-tap in air** | Dive-kick → ground slam |
@@ -54,10 +56,11 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 
 ## Tech notes
 
-- Single self-contained `index.html` (~50 KB) — HTML5 `<canvas>`, vanilla JS, no libraries.
+- Single self-contained `index.html` (~75 KB) — HTML5 `<canvas>`, vanilla JS, no libraries.
 - Procedural sprite factory + fully synthesized Web Audio (no image or sound files).
 - Fixed-timestep game loop with object pooling for obstacles, coins, loot, and particles.
-- Progress (best score, gold, perks, mute) persists in `localStorage`.
+- Progress (Dash and Expedition bests, gold, perks, mute) persists in `localStorage`.
+- Headless play-test harness at `tests/harness.py` (Python Playwright); the Pitfall parity rubric lives in `docs/PARITY.md`.
 - Deployed free via GitHub Pages.
 
 ## License
