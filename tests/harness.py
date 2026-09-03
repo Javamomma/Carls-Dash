@@ -151,7 +151,7 @@ def main():
     if not a.quiet:
         print(json.dumps(out, indent=1, default=str))
     else:
-        print(json.dumps({k: out[k] for k in ('ok', 'state', 'fps', 'summary', 'errors', 'console')}, default=str))
+        print(json.dumps({k: out[k] for k in ('ok', 'state', 'fps', 'summary', 'errors', 'console', 'eval')}, default=str))
     sys.exit(0 if ok else 1)
 
 if __name__ == '__main__':
