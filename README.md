@@ -19,8 +19,10 @@ It's built to be **grabbed and played in ten seconds** on a phone — portrait, 
 ## Features
 
 - 🗺️ **Two episodes** — DASH, the endless collapsing-floor run, and EXPEDITION, a fixed 32-screen jungle course generated from a constant seed (same route every time, so learn it), with a numbered `SCREEN n/32` HUD, signposts on the ground, and a golden EXIT to reach. Each mode keeps its own best on the title screen.
+- 💎 **Treasure hunt** — every expedition screen hides one of 32 treasures (money bag 2000 · silver bar 3000 · gold bar 4000 · diamond ring 5000). Grab all 32 or reach the EXIT for a VICTORY recap; your best haul persists.
+- ⏱️ **The 20:00 clock** — Pitfall-style expedition budget in the HUD, with a one-minute warning and a TIME UP ending if it hits 0:00 (pausing stops it).
 - 🏃 **Deep one-thumb move set** — jump, slide, double-tap dive-kick (with a chaining ground-slam), swipe-up dash hop, and airborne vine grabs.
-- ❤️ **Health bar** — trap hits cost hearts, not the whole run; clear a floor to heal.
+- ❤️ **Health bar & penalties** — trap hits cost a heart *and* viewers (−100, −200 for pits, never below 0, with a red pop so you feel it); clear a floor to heal.
 - 🎯 **Bonus reels & hazard reels** — rotating objectives (stomp lines, vine runs, idol hunts) and timed setpieces (log stampede, crocodile causeway, vine gauntlet).
 - 🔥 **Skill economy** — a DASH meter you *spend* (dash-hop, clutch dash-dodge) and a decaying near-miss combo that rewards playing dangerously.
 - 📺 **Broadcast spectacle** — a reactive audience, FEET CAM cutaways, a LIVE bug, milestone coin showers, and an announcer with a full range of stingers.
@@ -41,7 +43,7 @@ It's built to be **grabbed and played in ten seconds** on a phone — portrait, 
 | **Donut button** | Fire the DONUT MISSILE when the meter is full |
 | **During a floor collapse** | Tap rapidly to outrun the wall |
 
-Keyboard also works: **Space** = jump, **↓** = slide/dive, **D** = missile.
+Keyboard also works: **Space** = jump, **↓** = slide/dive, **D** = missile. On the title screen, **Tab** to a button and **Space**/**Enter** picks it.
 
 ## Run locally
 
@@ -56,10 +58,10 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 
 ## Tech notes
 
-- Single self-contained `index.html` (~75 KB) — HTML5 `<canvas>`, vanilla JS, no libraries.
+- Single self-contained `index.html` (~85 KB) — HTML5 `<canvas>`, vanilla JS, no libraries.
 - Procedural sprite factory + fully synthesized Web Audio (no image or sound files).
 - Fixed-timestep game loop with object pooling for obstacles, coins, loot, and particles.
-- Progress (Dash and Expedition bests, gold, perks, mute) persists in `localStorage`.
+- Progress (Dash and Expedition bests, treasure record, gold, perks, mute) persists in `localStorage`.
 - Headless play-test harness at `tests/harness.py` (Python Playwright); the Pitfall parity rubric lives in `docs/PARITY.md`.
 - Deployed free via GitHub Pages.
 
