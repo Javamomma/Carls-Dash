@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <title>Carl's Doorway Dash: Dungeon Run</title>
+  <meta name="description" content="A one-thumb pixel arcade roguelite about surviving an alien dungeon game show with a very opinionated cat.">
+  <meta name="theme-color" content="#090b12">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Carl's Doorway Dash: Dungeon Run">
+  <meta property="og:description" content="Choose dangerous doorways, earn absurd achievements, open loot boxes, and descend.">
+  <meta property="og:image" content="https://javamomma.github.io/Carls-Dash/docs/title-v2.png">
+  <meta property="og:url" content="https://javamomma.github.io/Carls-Dash/">
+  <style>
+/*__STYLES__*/
+  </style>
+</head>
+<body>
+  <main id="cabinet">
+    <canvas id="game" width="240" height="427" aria-label="Carl's Doorway Dash game"></canvas>
+
+    <section id="hud" class="ui hidden" aria-label="Run status">
+      <div class="hud-left">
+        <b id="floorHud">F1 · ENTRY WORKS</b>
+        <span id="hearts" aria-label="Health"></span>
+      </div>
+      <div class="hud-center"><b id="viewers">0</b><small>VIEWERS</small></div>
+      <div class="hud-right"><span id="boxCount">□ 0</span><button id="pauseBtn" aria-label="Pause">Ⅱ</button></div>
+      <div id="roomGoal"></div>
+      <div id="itemRack" aria-label="Inventory"></div>
+      <button id="donutBtn" class="action donut-action" aria-label="Use Donut's ability"><b>DONUT</b><span id="donutMode">ZAP</span><i id="donutCooldown"></i></button>
+    </section>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="achievement" role="status" aria-live="assertive"><small>NEW ACHIEVEMENT!</small><b id="achievementName"></b><span id="achievementReward"></span></div>
+    <div id="caption" aria-live="polite"></div>
+
+    <section id="title" class="overlay shown">
+      <div class="panel title-panel">
+        <p class="eyebrow">AN UNAUTHORIZEDLY DANGEROUS BROADCAST</p>
+        <h1>CARL'S<br><em>DOORWAY DASH</em></h1>
+        <p class="subtitle">DUNGEON RUN · VERSION 2</p>
+        <div class="title-art" aria-hidden="true"><span>▣</span><b>☞</b><span>♛</span></div>
+        <p>Choose the bad door. Impress the worse audience. Keep the cat alive.</p>
+        <button id="runBtn" class="primary">START EPISODE</button>
+        <button id="dailyBtn">DAILY DUNGEON</button>
+        <button id="howBtn">HOW TO PLAY</button>
+        <button id="archiveBtn">ARCHIVE</button>
+        <div class="title-stats">BEST <b id="best">0</b> · DISCOVERED <b id="discovered">0</b></div>
+      </div>
+    </section>
+
+    <section id="how" class="overlay">
+      <div class="panel scroll-panel">
+        <p class="eyebrow">CRAWLER ORIENTATION</p>
+        <h2>HOW TO SURVIVE</h2>
+        <div class="control-grid">
+          <div><b>TAP / SPACE</b><span>Jump; tap again for air jump</span></div>
+          <div><b>SWIPE ↓ / ↓</b><span>Slide or dive-stomp</span></div>
+          <div><b>SWIPE ↑ / ↑</b><span>Clutch dash</span></div>
+          <div><b>DONUT / D</b><span>Tap use · hold switch trick</span></div>
+          <div><b>ITEM / 1–3</b><span>Use carried dungeon junk</span></div>
+          <div><b>DOORS / ← →</b><span>Choose the next room</span></div>
+        </div>
+        <p>Risky stunts attract viewers. Achievements award loot boxes. Open boxes in safe rooms and build a ridiculous three-item loadout. Every floor changes the rules.</p>
+        <button data-close="how" class="primary">I REGRET NOTHING</button>
+      </div>
+    </section>
+
+    <section id="doorChoice" class="overlay">
+      <div class="panel route-panel">
+        <p class="eyebrow">ROUTE SELECTION</p>
+        <h2>CHOOSE A DOORWAY</h2>
+        <p id="donutAdvice" class="dialogue"></p>
+        <div id="doors" class="doors"></div>
+        <button id="scoutDoorBtn">ASK DONUT TO SCOUT</button>
+      </div>
+    </section>
+
+    <section id="safeRoom" class="overlay">
+      <div class="panel scroll-panel">
+        <p class="eyebrow">SAFE ROOM</p>
+        <h2>LOOT, ARGUE, DESCEND</h2>
+        <p id="safeDialogue" class="dialogue"></p>
+        <div id="boxes" class="boxes"></div>
+        <div id="lootChoices" class="loot-choices hidden"></div>
+        <h3>LOADOUT · THREE SLOTS</h3>
+        <div id="safeInventory" class="safe-inventory"></div>
+        <div class="safe-actions">
+          <button id="healBtn">PATCH UP</button>
+          <button id="leaveSafeBtn" class="primary">BACK TO THE DUNGEON</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sponsor" class="overlay">
+      <div class="panel">
+        <p class="eyebrow">PAID INTERRUPTION</p>
+        <h2>SPONSOR OFFER</h2>
+        <p id="sponsorText"></p>
+        <div id="sponsorChoices" class="stack"></div>
+        <button id="declineSponsor">DECLINE WITH PREJUDICE</button>
+      </div>
+    </section>
+
+    <section id="classSelect" class="overlay">
+      <div class="panel scroll-panel">
+        <p class="eyebrow">FLOOR THREE PRIVILEGE</p>
+        <h2>SELECT A CLASS</h2>
+        <p class="dialogue">DONUT: “Obviously I should choose for both of us.”</p>
+        <div id="classes" class="loot-choices"></div>
+      </div>
+    </section>
+
+    <section id="stairs" class="overlay">
+      <div class="panel">
+        <p class="eyebrow">FLOOR DEADLINE</p>
+        <h2>THE STAIRWELL IS CLOSING</h2>
+        <p id="stairsClock" class="stairs-clock">6.0</p>
+        <p class="dialogue">SYSTEM: Descend safely, or steal one last box and pay for the delay in blood.</p>
+        <div class="stack">
+          <button id="descendBtn" class="primary">DESCEND NOW</button>
+          <button id="greedBtn">GRAB THE BOX · LOSE 1 HEART</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="pause" class="overlay">
+      <div class="panel">
+        <h2>BROADCAST PAUSED</h2>
+        <button id="resumeBtn" class="primary">RESUME</button>
+        <button id="restartBtn">RESTART EPISODE</button>
+        <button id="quitBtn">RETURN TO TITLE</button>
+      </div>
+    </section>
+
+    <section id="over" class="overlay">
+      <div class="panel">
+        <p class="eyebrow">BROADCAST RECAP</p>
+        <h2 id="overTitle">EPISODE TERMINATED</h2>
+        <div class="recap">
+          <div><small>VIEWERS</small><b id="finalViewers">0</b></div>
+          <div><small>FLOOR</small><b id="finalFloor">1</b></div>
+          <div><small>ROOMS</small><b id="finalRooms">0</b></div>
+          <div><small>ACHIEVEMENTS</small><b id="finalAchievements">0</b></div>
+        </div>
+        <p id="deathLine" class="dialogue"></p>
+        <button id="retryBtn" class="primary">NEW EPISODE</button>
+        <button id="overTitleBtn">TITLE</button>
+      </div>
+    </section>
+
+    <section id="archive" class="overlay">
+      <div class="panel scroll-panel">
+        <p class="eyebrow">CRAWLER ARCHIVE</p>
+        <h2>DISCOVERED ACHIEVEMENTS</h2>
+        <div id="archiveList" class="archive-list"></div>
+        <button data-close="archive" class="primary">BACK</button>
+      </div>
+    </section>
+  </main>
+  <script>
+/*__GAME__*/
+  </script>
+</body>
+</html>

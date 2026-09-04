@@ -1,0 +1,11 @@
+{
+  "name": "carls-doorway-dash",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node --check src/game.js",
+    "test": "npm run build && npm run check && node --test test/*.mjs"
+  }
+}

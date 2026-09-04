@@ -1,4 +1,6 @@
-# Marketing kit — Carl's Doorway Dash
+# Archived marketing kit — Carl's Doorway Dash Version 1
+
+> This copy documents the original endless-runner release preserved at tag `v1.0.0`. It is retained for historical reference and should be refreshed before promoting Version 2.
 
 Ready-to-paste copy for launching the game. Live URL: **https://javamomma.github.io/Carls-Dash/**
 
