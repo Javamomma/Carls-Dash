@@ -11,8 +11,9 @@ const [template, styles, game] = await Promise.all([
 ]);
 
 const output = template
-  .replace('/*__STYLES__*/', styles.trim())
-  .replace('/*__GAME__*/', game.trim());
+  // Replacement callbacks keep `$&`, `$'`, and similar source text literal.
+  .replace('/*__STYLES__*/', () => styles.trim())
+  .replace('/*__GAME__*/', () => game.trim());
 
 if (output.includes('/*__STYLES__*/') || output.includes('/*__GAME__*/')) {
   throw new Error('Build placeholders were not replaced');
