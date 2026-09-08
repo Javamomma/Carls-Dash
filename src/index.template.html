@@ -27,6 +27,9 @@
       <div class="hud-center"><b id="viewers">0</b><small>VIEWERS</small></div>
       <div class="hud-right"><span id="boxCount">□ 0</span><button id="pauseBtn" aria-label="Pause">Ⅱ</button></div>
       <div id="roomGoal"></div>
+      <div id="milestone"><span id="viewerTier">LOCAL FEED</span><i><b id="viewerProgress"></b></i><small id="viewerNext">1,500 TO TRENDING</small></div>
+      <div id="challengeStatus"><b id="challengeLabel">ROOM OBJECTIVE</b><span id="challengeText">—</span></div>
+      <div id="sponsorStatus" class="hidden"></div>
       <div id="itemRack" aria-label="Inventory"></div>
       <button id="donutBtn" class="action donut-action" aria-label="Use Donut's ability"><b>DONUT</b><span id="donutMode">ZAP</span><i id="donutCooldown"></i></button>
     </section>
@@ -39,7 +42,7 @@
       <div class="panel title-panel">
         <p class="eyebrow">AN UNAUTHORIZEDLY DANGEROUS BROADCAST</p>
         <h1>CARL'S<br><em>DOORWAY DASH</em></h1>
-        <p class="subtitle">DUNGEON RUN · VERSION 2</p>
+        <p class="subtitle">DUNGEON RUN · VERSION 2.1</p>
         <div class="title-art" aria-hidden="true"><span>▣</span><b>☞</b><span>♛</span></div>
         <p>Choose the bad door. Impress the worse audience. Keep the cat alive.</p>
         <button id="runBtn" class="primary">START EPISODE</button>
@@ -61,8 +64,12 @@
           <div><b>DONUT / D</b><span>Tap use · hold switch trick</span></div>
           <div><b>ITEM / 1–3</b><span>Use carried dungeon junk</span></div>
           <div><b>DOORS / ← →</b><span>Choose the next room</span></div>
+          <div><b>SWING VINES</b><span>Jump into the rope; tap to launch early</span></div>
+          <div><b>RAILS + SPORES</b><span>Land to grind; bounce into high routes</span></div>
+          <div><b>MINECARTS</b><span>Hijack them and smash small hazards</span></div>
+          <div><b>OBJECTIVES</b><span>Complete the visible goal for viewers and boxes</span></div>
         </div>
-        <p>Risky stunts attract viewers. Achievements award loot boxes. Open boxes in safe rooms and build a ridiculous three-item loadout. Every floor changes the rules.</p>
+        <p>Rooms are authored set-pieces with high and low routes. Risky stunts attract viewers, three room objectives earn a Silver Box, and every boss has its own rule. Open boxes in safe rooms and build a ridiculous three-item loadout.</p>
         <button data-close="how" class="primary">I REGRET NOTHING</button>
       </div>
     </section>
@@ -143,6 +150,7 @@
           <div><small>FLOOR</small><b id="finalFloor">1</b></div>
           <div><small>ROOMS</small><b id="finalRooms">0</b></div>
           <div><small>ACHIEVEMENTS</small><b id="finalAchievements">0</b></div>
+          <div><small>OBJECTIVES</small><b id="finalChallenges">0</b></div>
         </div>
         <p id="deathLine" class="dialogue"></p>
         <button id="retryBtn" class="primary">NEW EPISODE</button>

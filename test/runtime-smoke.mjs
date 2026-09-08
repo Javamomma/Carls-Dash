@@ -10,6 +10,11 @@ class ClassList {
   add(...values) { values.forEach(value => this.values.add(value)); }
   remove(...values) { values.forEach(value => this.values.delete(value)); }
   contains(value) { return this.values.has(value); }
+  toggle(value, force) {
+    const enabled = force === undefined ? !this.values.has(value) : force;
+    if (enabled) this.values.add(value); else this.values.delete(value);
+    return enabled;
+  }
 }
 
 class FakeElement {
@@ -75,12 +80,29 @@ vm.createContext(sandbox);
 vm.runInContext(`${source}\nglobalThis.__game = Game;`, sandbox);
 
 const game = sandbox.__game;
+for (const id of ['runBtn', 'dailyBtn', 'howBtn', 'archiveBtn']) {
+  assert.equal(typeof elements.get(id).onclick, 'function', `${id} should be wired to a click handler`);
+}
 game.start(false);
 assert.equal(game.state, 'RUNNING');
 assert.equal(game.floor, 1);
 assert.equal(game.inventory.length, 0);
+assert.ok(game.blueprint?.name, 'a room should select an authored blueprint');
+assert.ok(game.roomEvents.length >= 9, 'a blueprint should contain a substantial event sequence');
 game.update(1 / 60);
 game.draw();
+
+game.features = [];
+game.challenge = { kind: 'swing', target: 1, label: 'test swing', progress: 0, complete: false };
+game.spawnRoomEvent([0, 'vine']);
+assert.equal(game.features[0].type, 'swingVine');
+game.features[0].x = game.player.x;
+game.player.y = 270;
+game.player.vy = -20;
+game.player.airborne = true;
+game.updateFeatures(0);
+assert.equal(game.player.swingFeature, game.features[0], 'an airborne runner should catch an aligned swing vine');
+assert.equal(game.challenge.complete, true, 'traversal should advance the visible room objective');
 
 game.player.invincible = 999;
 for (let frame = 0; frame < 900 && game.state === 'RUNNING'; frame++) game.update(1 / 60);
@@ -134,6 +156,44 @@ assert.equal(game.state, 'SPONSOR');
 game.acceptSponsor('double');
 assert.equal(game.state, 'CHOICE');
 assert.equal(game.sponsorModifier.double, true);
+assert.equal(game.sponsorModifier.roomsLeft, 2);
+game.settleSponsorRoom();
+assert.equal(game.sponsorModifier.roomsLeft, 1);
+game.settleSponsorRoom();
+assert.equal(game.sponsorModifier, null, 'sponsor effects should expire at their stated duration');
+
+game.start(false);
+game.completeRoom();
+game.beginRoom(game.doorChoices[0]);
+game.completeRoom();
+assert.equal(game.state, 'SPONSOR', 'the floor offer should arrive after room two');
+assert.equal(game.sponsorOfferedFloor, 1);
+game.declineSponsor();
+assert.equal(game.state, 'SAFE');
+game.queueInterlude('door');
+assert.equal(game.state, 'CHOICE', 'a sponsor offer must not repeat on the same floor');
+
+game.start(false);
+game.addViewers(1500, 'TEST MILESTONE');
+assert.ok(game.boxes.includes('bronze'), 'viewer milestones should grant their stated reward');
+const milestoneBoxes = game.boxes.length;
+game.addViewers(1);
+assert.equal(game.boxes.length, milestoneBoxes, 'a viewer milestone reward should only be granted once');
+
+game.floor = 1;
+game.startBoss();
+game.boss.timer = 0;
+game.updateBoss(.02);
+assert.equal(game.boss.mode, 'telegraph', 'Goblin Dozer should telegraph its ram');
+game.boss.modeTimer = 0;
+game.updateBoss(.02);
+assert.equal(game.boss.mode, 'ram');
+
+game.floor = 2;
+game.startBoss();
+game.boss.timer = 0;
+game.updateBoss(.02);
+assert.ok(game.pickups.some(pickup => pickup.type === 'coolant'), 'Furnace Foreman should launch collectible coolant valves');
 
 game.beginRoom(game.doorChoices[0]);
 game.hp = 1;

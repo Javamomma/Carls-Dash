@@ -1,23 +1,24 @@
 # Carl's Doorway Dash: Dungeon Run
 
-**Version 2 turns the original one-thumb runner into a compact pixel arcade roguelite.** Choose dangerous doorways, earn absurd achievements, crack open loot boxes in safe rooms, improvise a three-item build, work with Donut, and fight your way down an increasingly unreasonable dungeon.
+**Version 2.1 turns the original one-thumb runner into a compact pixel arcade roguelite with authored set-pieces.** Swing from vines, grind rails, bounce to high routes, hijack minecarts, clear visible room objectives, work with Donut, and fight your way down an increasingly unreasonable dungeon.
 
 Play the published build at **https://javamomma.github.io/Carls-Dash/**.
 
 ![Version 2 title screen](docs/title-v2.png)
 
-## Version 2 highlights
+## Version 2.1 highlights
 
 - **Real route choices** — choose between supply tunnels, mob dens, stunt routes, sponsor vaults, mystery doors, and crawler rescues.
 - **Achievements and loot boxes** — fourteen discoverable achievements award Bronze, Silver, or Gold boxes.
 - **Safe rooms and run builds** — open boxes, choose strange equipment, heal at a cost, and manage a three-slot inventory.
 - **Carl and Donut teamwork** — Donut can Zap, Charm, or Scout. Tap her button to act; hold it to switch abilities.
 - **Improvised interactions** — grease an enemy into another hazard, deploy traps, reverse obstacles, light dark rooms, or bomb a boss.
-- **Five mechanically distinct floors** — classic jungle ruins, a speed-surging foundry, blackout tunnels, dangerous railworks, and hunting gardens.
-- **Floor bosses** — every fourth room leads to a named boss with attack and vulnerability windows.
+- **Authored traversal rooms** — fifteen named set-pieces replace random obstacle repetition with swing vines, grind rails, spore pads, minecarts, high routes, signal motes, and mob runs.
+- **Visible objectives and ratings tiers** — every room reports exact progress, every third completed objective awards a Silver Box, and each measurable audience milestone awards a stated Bronze, Silver, or Gold Box.
+- **Five distinct boss rules** — ram and stall the Goblin Dozer, cool the Furnace Foreman, reveal the Tunnel Queen, switch the Ticket Tyrant's tracks, and punish the Celebrity Hunter's reload.
 - **Stairwell deadlines** — descend safely or steal one last box and pay for the delay with health.
 - **Crawler classes** — Floor 3 offers Brawler, Junk Engineer, and Crowd Problem builds.
-- **Audience temptation** — viewer milestones trigger sponsor offers that exchange safety for spectacle.
+- **Readable sponsor contracts** — exactly one offer arrives per floor, with guaranteed immediate effects, room duration, benefit, and penalty pinned in the HUD.
 - **Daily Dungeon** — deterministic daily routes use a separate random stream from visual effects.
 - **Classic presentation** — low-resolution canvas art, hard pixels, limited floor palettes, synthesized sound, and no external runtime dependencies.
 
@@ -31,6 +32,10 @@ Play the published build at **https://javamomma.github.io/Carls-Dash/**.
 | Donut button / D | Use Donut's ability; hold the button to switch ability |
 | Item buttons / 1–3 | Use an equipped item |
 | Door buttons / Left–Right Arrows | Choose the next room |
+| Swing vine | Jump into its handle; tap again to launch early |
+| Grind rail | Land on it; jump to pop off |
+| Spore pad | Run onto it for an automatic high bounce |
+| Minecart | Collect it, jump normally, and smash light hazards |
 
 ## Development
 
@@ -58,7 +63,8 @@ index.html               Generated GitHub Pages build
 ## Version history
 
 - `v1.0.0` preserves the original endless-runner release.
-- `version-2` contains the room-based arcade roguelite rebuild.
+- `v2.0.0` preserves the first room-based arcade roguelite release.
+- `version-2.1` contains the authored-room and unique-boss overhaul.
 
 ## Fan-project notice
 

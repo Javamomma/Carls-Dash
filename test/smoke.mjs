@@ -15,6 +15,9 @@ assert.equal(html.match(/<script>\s*([\s\S]*?)\s*<\/script>/)[1].trim(), game.tr
 assert.ok(html.includes(styles.trim()), 'generated stylesheet must equal its source');
 assert.match(game, /const FLOORS = \[/);
 assert.match(game, /const ROUTES = \[/);
+assert.match(game, /const ROOM_BLUEPRINTS = \[/);
+assert.match(game, /const VIEWER_TIERS = \[/);
+assert.match(game, /const SPONSOR_OFFERS = \[/);
 assert.match(game, /const ITEMS = \{/);
 assert.match(game, /const ACHIEVEMENTS = \{/);
 assert.match(game, /showSafeRoom\(/);
@@ -22,6 +25,17 @@ assert.match(game, /startBoss\(/);
 assert.match(game, /showSponsor\(/);
 assert.match(game, /showClasses\(/);
 assert.match(game, /useDonut\(/);
+assert.match(game, /updateFeatures\(/);
+assert.match(game, /DODGE THE RAM/);
+assert.match(game, /COLLECT 4 COOLANT VALVES/);
+
+const blueprintMatches = [...game.matchAll(/id: '([a-z-]+)', floor: (\d), affinity:/g)];
+const blueprintIds = blueprintMatches.map(match => match[1]);
+assert.ok(blueprintIds.length >= 15, 'expected at least fifteen authored room blueprints');
+assert.equal(new Set(blueprintIds).size, blueprintIds.length, 'room blueprint ids must be unique');
+for (let floor = 1; floor <= 5; floor++) {
+  assert.ok(blueprintMatches.filter(match => Number(match[2]) === floor).length >= 3, `floor ${floor} should have at least three authored set-pieces`);
+}
 
 const achievementIds = [...game.matchAll(/^\s{2}([A-Za-z][A-Za-z0-9]*): \{ name:/gm)].map(match => match[1]);
 assert.ok(achievementIds.length >= 12, 'expected at least twelve achievements');

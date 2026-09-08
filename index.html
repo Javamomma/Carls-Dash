@@ -49,7 +49,19 @@ button:disabled { opacity:.42; cursor:not-allowed; }
 .hud-right { right:7px; display:flex; gap:5px; align-items:center; }
 #boxCount { color:var(--blue); }
 #pauseBtn { width:38px; min-width:38px; min-height:38px; padding:0; pointer-events:auto; }
-#roomGoal { position:absolute; top:49px; left:50%; width:88%; max-width:370px; transform:translateX(-50%); text-align:center; color:#e9e4ce; font-size:.86em; background:#080b11c9; border:1px solid #74633c; padding:4px; }
+#roomGoal { position:absolute; top:49px; left:50%; width:88%; max-width:370px; transform:translateX(-50%); text-align:center; color:#e9e4ce; font-size:.8em; background:#080b11e8; border:1px solid #74633c; padding:4px; }
+#milestone { position:absolute; top:74px; left:8px; width:112px; padding:4px 5px; background:#080b11dc; border:1px solid #526075; font-size:7px; }
+#milestone span,#milestone small { display:block; white-space:nowrap; }
+#milestone span { color:var(--blue); }
+#milestone small { margin-top:2px; color:#d6dae3; }
+#milestone i { display:block; height:3px; margin-top:2px; background:#202a38; }
+#milestone i b { display:block; width:var(--viewer-progress,0%); height:100%; background:var(--gold); }
+#challengeStatus { position:absolute; top:74px; right:8px; width:112px; padding:4px 5px; text-align:right; background:#080b11dc; border:1px solid #75623b; font-size:7px; }
+#challengeStatus b,#challengeStatus span { display:block; }
+#challengeStatus b { color:var(--gold); }
+#challengeStatus.done { border-color:var(--good); }
+#challengeStatus.done b { color:var(--good); }
+#sponsorStatus { position:absolute; top:105px; left:50%; transform:translateX(-50%); max-width:86%; padding:3px 6px; background:#351d40e8; border:1px solid #cc82dc; color:#f7d8ff; font-size:7px; text-align:center; }
 #itemRack { position:absolute; left:50%; bottom:13px; display:flex; gap:5px; transform:translateX(-50%); pointer-events:auto; }
 .item-button { width:50px; min-width:50px; height:46px; min-height:46px; padding:3px; font-size:8px; border-color:#7893aa; overflow:hidden; }
 .item-button b { display:block; font-size:17px; line-height:17px; }
@@ -63,7 +75,7 @@ button:disabled { opacity:.42; cursor:not-allowed; }
 #toast,#caption,#achievement { position:absolute; z-index:30; pointer-events:none; opacity:0; transition:opacity .15s,transform .15s; }
 #toast { left:50%; bottom:83px; width:84%; max-width:360px; transform:translate(-50%,12px); border:2px solid #6f7b93; background:#101827ed; padding:7px 9px; font-size:clamp(9px,2.4vw,12px); text-align:center; color:#eef3ff; }
 #toast.on { opacity:1; transform:translate(-50%,0); }
-#caption { left:8px; top:78px; max-width:76%; background:#05070bdc; border-left:4px solid var(--gold); padding:6px 8px; font-size:clamp(9px,2.3vw,12px); color:#fff6c7; transform:translateX(-8px); }
+#caption { left:8px; top:122px; max-width:76%; background:#05070bdc; border-left:4px solid var(--gold); padding:6px 8px; font-size:clamp(9px,2.3vw,12px); color:#fff6c7; transform:translateX(-8px); }
 #caption.on { opacity:1; transform:none; }
 #achievement { left:50%; top:30%; width:88%; max-width:390px; transform:translate(-50%,-12px) scale(.94); text-align:center; border:4px double var(--gold); background:#11182cf2; padding:13px; box-shadow:0 0 0 4px #08090d; }
 #achievement.on { opacity:1; transform:translate(-50%,0) scale(1); }
@@ -91,6 +103,9 @@ button:disabled { opacity:.42; cursor:not-allowed; }
 .dialogue { padding:7px; color:#fff2ad!important; background:#0c111d; border-left:3px solid #c881d8; text-align:left; }
 .stack { display:grid; gap:7px; }
 .stack button { width:100%; margin:0; }
+#sponsorChoices button span,#sponsorChoices button small { display:block; margin-top:4px; }
+#sponsorChoices button span { color:var(--good); }
+#sponsorChoices button small { color:#ffd37e; line-height:1.35; }
 
 .control-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:12px 0; text-align:left; }
 .control-grid div { border:1px solid #3f4b62; background:#0e1522; padding:7px; }
@@ -141,17 +156,6 @@ button:disabled { opacity:.42; cursor:not-allowed; }
 @supports (aspect-ratio:240/427) {
   #cabinet { width:min(100vw,calc(100vh * .562)); height:auto; aspect-ratio:240/427; }
 }
-.inventory-card b { display:block; color:var(--cream); }
-.safe-actions { margin-top:10px; }
-.recap { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:13px 0; }
-.recap div { padding:9px; background:#0b111d; border:1px solid #354159; }
-.recap small,.recap b { display:block; }
-.recap small { color:#aeb8cc; font-size:9px; }
-.recap b { color:var(--cream); font-size:18px; }
-.archive-list { text-align:left; }
-.archive-entry { border-top:1px solid #3e4960; padding:8px 2px; font-size:10px; color:#aab3c6; }
-.archive-entry.unlocked { color:#fff; }
-.archive-entry b { display:block; color:var(--cream); }
 
 @media (max-height:640px) {
   .panel { padding:12px; }
@@ -175,6 +179,9 @@ button:disabled { opacity:.42; cursor:not-allowed; }
       <div class="hud-center"><b id="viewers">0</b><small>VIEWERS</small></div>
       <div class="hud-right"><span id="boxCount">□ 0</span><button id="pauseBtn" aria-label="Pause">Ⅱ</button></div>
       <div id="roomGoal"></div>
+      <div id="milestone"><span id="viewerTier">LOCAL FEED</span><i><b id="viewerProgress"></b></i><small id="viewerNext">1,500 TO TRENDING</small></div>
+      <div id="challengeStatus"><b id="challengeLabel">ROOM OBJECTIVE</b><span id="challengeText">—</span></div>
+      <div id="sponsorStatus" class="hidden"></div>
       <div id="itemRack" aria-label="Inventory"></div>
       <button id="donutBtn" class="action donut-action" aria-label="Use Donut's ability"><b>DONUT</b><span id="donutMode">ZAP</span><i id="donutCooldown"></i></button>
     </section>
@@ -187,7 +194,7 @@ button:disabled { opacity:.42; cursor:not-allowed; }
       <div class="panel title-panel">
         <p class="eyebrow">AN UNAUTHORIZEDLY DANGEROUS BROADCAST</p>
         <h1>CARL'S<br><em>DOORWAY DASH</em></h1>
-        <p class="subtitle">DUNGEON RUN · VERSION 2</p>
+        <p class="subtitle">DUNGEON RUN · VERSION 2.1</p>
         <div class="title-art" aria-hidden="true"><span>▣</span><b>☞</b><span>♛</span></div>
         <p>Choose the bad door. Impress the worse audience. Keep the cat alive.</p>
         <button id="runBtn" class="primary">START EPISODE</button>
@@ -209,8 +216,12 @@ button:disabled { opacity:.42; cursor:not-allowed; }
           <div><b>DONUT / D</b><span>Tap use · hold switch trick</span></div>
           <div><b>ITEM / 1–3</b><span>Use carried dungeon junk</span></div>
           <div><b>DOORS / ← →</b><span>Choose the next room</span></div>
+          <div><b>SWING VINES</b><span>Jump into the rope; tap to launch early</span></div>
+          <div><b>RAILS + SPORES</b><span>Land to grind; bounce into high routes</span></div>
+          <div><b>MINECARTS</b><span>Hijack them and smash small hazards</span></div>
+          <div><b>OBJECTIVES</b><span>Complete the visible goal for viewers and boxes</span></div>
         </div>
-        <p>Risky stunts attract viewers. Achievements award loot boxes. Open boxes in safe rooms and build a ridiculous three-item loadout. Every floor changes the rules.</p>
+        <p>Rooms are authored set-pieces with high and low routes. Risky stunts attract viewers, three room objectives earn a Silver Box, and every boss has its own rule. Open boxes in safe rooms and build a ridiculous three-item loadout.</p>
         <button data-close="how" class="primary">I REGRET NOTHING</button>
       </div>
     </section>
@@ -291,6 +302,7 @@ button:disabled { opacity:.42; cursor:not-allowed; }
           <div><small>FLOOR</small><b id="finalFloor">1</b></div>
           <div><small>ROOMS</small><b id="finalRooms">0</b></div>
           <div><small>ACHIEVEMENTS</small><b id="finalAchievements">0</b></div>
+          <div><small>OBJECTIVES</small><b id="finalChallenges">0</b></div>
         </div>
         <p id="deathLine" class="dialogue"></p>
         <button id="retryBtn" class="primary">NEW EPISODE</button>
@@ -394,12 +406,121 @@ const FLOORS = [
 ];
 
 const ROUTES = [
-  { id: 'supply', title: 'SUPPLY TUNNEL', icon: '▤', kind: 'safe', threat: .82, reward: 'More coins · calmer hazards', description: 'Boring, survivable, suspiciously clean.' },
-  { id: 'mob', title: 'MOB DEN', icon: '♞', kind: 'danger', threat: 1.25, reward: 'Silver box for a clean clear', description: 'The occupants have formed a welcoming committee.' },
-  { id: 'stunt', title: 'STUNT CHUTE', icon: '↯', kind: 'danger', threat: 1.38, reward: 'Double stunt viewers', description: 'Built by producers who dislike guardrails.' },
-  { id: 'vault', title: 'SPONSOR VAULT', icon: '$', kind: 'danger', threat: 1.18, reward: 'Extra loot · fewer safe choices', description: 'Free merchandise is never free.' },
-  { id: 'rescue', title: 'RESCUE SIGNAL', icon: '!', kind: 'rescue', threat: 1.32, reward: 'Gain an ally · no sponsor payout', description: 'Someone is alive behind that door.' },
+  { id: 'supply', title: 'SUPPLY TUNNEL', icon: '▤', kind: 'safe', threat: .82, reward: 'Hazards move 18% slower', description: 'Boring, survivable, suspiciously clean.' },
+  { id: 'mob', title: 'MOB DEN', icon: '♞', kind: 'danger', threat: 1.25, reward: 'No damage: guaranteed Silver Box', description: 'The occupants have formed a welcoming committee.' },
+  { id: 'stunt', title: 'STUNT CHUTE', icon: '↯', kind: 'danger', threat: 1.38, reward: 'All viewer gains ×2', description: 'Built by producers who dislike guardrails.' },
+  { id: 'vault', title: 'SPONSOR VAULT', icon: '$', kind: 'danger', threat: 1.18, reward: 'Coins ×2.2 · guaranteed loot box', description: 'Free merchandise is never free.' },
+  { id: 'rescue', title: 'RESCUE SIGNAL', icon: '!', kind: 'rescue', threat: 1.32, reward: 'Rescue grants one damage shield', description: 'Someone is alive behind that door.' },
   { id: 'mystery', title: 'UNMARKED DOOR', icon: '?', kind: 'mystery', threat: 1.05, reward: 'Unknown until opened', description: 'Donut says mystery is another word for poor planning.' },
+];
+
+const VIEWER_TIERS = [
+  { name: 'LOCAL FEED', at: 0 },
+  { name: 'TRENDING', at: 1500, reward: 'bronze' },
+  { name: 'GALACTIC', at: 4000, reward: 'silver' },
+  { name: 'PRIME TIME', at: 8000, reward: 'gold' },
+  { name: 'DUNGEON LEGEND', at: 15000, reward: 'gold' },
+];
+
+const SPONSOR_OFFERS = [
+  {
+    id: 'double', title: 'DOUBLE OR TROUBLE',
+    now: 'No immediate payout.', next: 'NEXT 2 ROOMS: +100% viewers · hazards +20% speed.',
+    apply(game) { game.sponsorModifier = { id: this.id, label: '2× VIEWERS · +20% SPEED', roomsLeft: 2, double: true, threat: 1.2 }; },
+  },
+  {
+    id: 'medical', title: 'MEDICAL MIRACLE',
+    now: 'NOW: restore 2 hearts.', next: 'NEXT ROOM: coin value −50%.',
+    apply(game) { game.heal(2); game.sponsorModifier = { id: this.id, label: 'COINS −50%', roomsLeft: 1, coinScale: .5 }; },
+  },
+  {
+    id: 'crate', title: 'LOOT CONTRACT',
+    now: 'NOW: receive a Gold Box.', next: 'NEXT ROOM: one extra hazard wave.',
+    apply(game) { game.awardBox('gold'); game.sponsorModifier = { id: this.id, label: 'EXTRA HAZARD WAVE', roomsLeft: 1, extraWave: true }; },
+  },
+  {
+    id: 'donut', title: 'ROYAL ENDORSEMENT',
+    now: 'NOW: Donut is ready.', next: 'NEXT 2 ROOMS: Donut recharges 50% faster.',
+    apply(game) { game.donutCooldown = 0; game.sponsorModifier = { id: this.id, label: 'DONUT RECHARGE +50%', roomsLeft: 2, donutRate: 1.5 }; },
+  },
+];
+
+const ROOM_BLUEPRINTS = [
+  {
+    id: 'canopy-swing', floor: 1, affinity: ['stunt', 'mystery'], name: 'CANOPY SWING', duration: 12.4,
+    challenge: { kind: 'swing', target: 2, label: 'Catch 2 swing vines' },
+    events: [[.8, 'coins', 'low', 5], [1.7, 'vine'], [2.7, 'pit'], [3.7, 'coins', 'high', 7], [5.1, 'branch'], [6, 'vine'], [7, 'pit'], [8.2, 'goblin'], [9.3, 'coins', 'arc', 7], [10.1, 'log']],
+  },
+  {
+    id: 'goblin-market', floor: 1, affinity: ['mob', 'rescue'], name: 'GOBLIN MARKET CRASH', duration: 12.2,
+    challenge: { kind: 'stomp', target: 3, label: 'Stomp 3 dungeon mobs' },
+    events: [[.9, 'goblin'], [1.8, 'coins', 'arc', 5], [3, 'snake'], [4, 'goblin'], [5.4, 'bounce'], [6.3, 'goblin'], [7.4, 'pit'], [8.4, 'goblin'], [9.4, 'coins', 'high', 6], [10.1, 'branch']],
+  },
+  {
+    id: 'ruin-rails', floor: 1, affinity: ['supply', 'vault'], name: 'RUIN RAIL RELAY', duration: 12.5,
+    challenge: { kind: 'grind', target: 3, label: 'Grind 3 rail sections' },
+    events: [[.8, 'rail'], [1.2, 'coins', 'high', 8], [3, 'pit'], [4, 'rail'], [4.4, 'coins', 'high', 7], [6.4, 'branch'], [7.2, 'rail'], [8.1, 'coins', 'high', 6], [9.4, 'log'], [10.2, 'pit']],
+  },
+  {
+    id: 'foundry-pulse', floor: 2, affinity: ['supply', 'stunt', 'rescue'], name: 'FOUNDRY PULSE', duration: 12.5,
+    challenge: { kind: 'near', target: 3, label: 'Thread 3 danger-close gaps' },
+    events: [[.8, 'flame'], [1.8, 'coins', 'arc', 6], [2.9, 'crusher'], [4.1, 'flame'], [5, 'bounce'], [5.9, 'crusher'], [7, 'coins', 'high', 7], [8.2, 'flame'], [9.2, 'pit'], [10.1, 'crusher']],
+  },
+  {
+    id: 'slag-cart', floor: 2, affinity: ['mob', 'vault', 'mystery'], name: 'SLAG CART SMASH', duration: 12.6,
+    challenge: { kind: 'smash', target: 3, label: 'Smash 3 obstacles in the cart' },
+    events: [[.7, 'vehicle'], [1.5, 'barrier'], [2.4, 'goblin'], [3.4, 'coins', 'low', 6], [4.5, 'barrier'], [5.5, 'pit'], [6.7, 'goblin'], [7.8, 'barrier'], [8.8, 'coins', 'arc', 7], [10, 'crusher']],
+  },
+  {
+    id: 'coolant-conduit', floor: 2, affinity: ['supply', 'rescue', 'mystery'], name: 'COOLANT CONDUIT', duration: 12.7,
+    challenge: { kind: 'grind', target: 2, label: 'Grind 2 pipe rails' },
+    events: [[.7, 'rail'], [1.2, 'coins', 'high', 7], [2.9, 'flame'], [4.1, 'bounce'], [5, 'crusher'], [6.1, 'rail'], [6.7, 'coins', 'high', 8], [8.5, 'flame'], [9.5, 'pit'], [10.4, 'log']],
+  },
+  {
+    id: 'blackout-motes', floor: 3, affinity: ['supply', 'rescue', 'mystery'], name: 'BLACKOUT MOTE RUN', duration: 12.8,
+    challenge: { kind: 'mote', target: 6, label: 'Collect 6 signal motes' },
+    events: [[.7, 'motes', 3], [1.7, 'bat'], [2.6, 'motes', 3], [3.7, 'pit'], [4.8, 'bat'], [5.7, 'motes', 3], [6.8, 'crusher'], [7.9, 'motes', 3], [9, 'snake'], [10, 'bat']],
+  },
+  {
+    id: 'burrow-bounce', floor: 3, affinity: ['mob', 'stunt', 'vault'], name: 'BURROW BOUNCE CHAIN', duration: 12.5,
+    challenge: { kind: 'bounce', target: 3, label: 'Chain 3 spore bounces' },
+    events: [[.7, 'bounce'], [1.4, 'coins', 'high', 6], [2.7, 'pit'], [3.6, 'bounce'], [4.5, 'bat'], [5.5, 'coins', 'arc', 7], [6.7, 'bounce'], [7.5, 'crusher'], [8.8, 'pit'], [9.8, 'bat']],
+  },
+  {
+    id: 'echo-vines', floor: 3, affinity: ['stunt', 'rescue'], name: 'ECHO VINE VAULT', duration: 12.8,
+    challenge: { kind: 'swing', target: 2, label: 'Catch 2 echo vines' },
+    events: [[.7, 'motes', 2], [1.5, 'vine'], [2.5, 'pit'], [3.7, 'bat'], [4.8, 'motes', 3], [5.8, 'vine'], [6.8, 'pit'], [7.8, 'crusher'], [8.9, 'motes', 3], [10, 'bat']],
+  },
+  {
+    id: 'switchback', floor: 4, affinity: ['supply', 'stunt'], name: 'IRON SWITCHBACK', duration: 12.7,
+    challenge: { kind: 'grind', target: 3, label: 'Ride 3 moving rails' },
+    events: [[.7, 'rail'], [1.2, 'coins', 'high', 7], [2.9, 'cart'], [4, 'rail'], [4.5, 'coins', 'high', 7], [6.2, 'barrier'], [7.2, 'rail'], [8.1, 'bat'], [9.1, 'pit'], [10.2, 'cart']],
+  },
+  {
+    id: 'express-lane', floor: 4, affinity: ['mob', 'vault', 'rescue', 'mystery'], name: 'EXPRESS LANE HIJACK', duration: 12.6,
+    challenge: { kind: 'smash', target: 4, label: 'Cart-smash 4 transit hazards' },
+    events: [[.5, 'vehicle'], [1.5, 'barrier'], [2.3, 'cart'], [3.3, 'barrier'], [4.1, 'coins', 'low', 6], [5.2, 'pit'], [6.2, 'cart'], [7.1, 'barrier'], [8.3, 'bat'], [9.4, 'cart']],
+  },
+  {
+    id: 'signal-jump', floor: 4, affinity: ['stunt', 'supply', 'rescue'], name: 'SIGNAL JUMP ARRAY', duration: 12.8,
+    challenge: { kind: 'bounce', target: 3, label: 'Bounce 3 signal pads' },
+    events: [[.7, 'bounce'], [1.4, 'coins', 'high', 6], [2.7, 'cart'], [3.8, 'bounce'], [4.7, 'barrier'], [5.8, 'rail'], [6.4, 'coins', 'high', 7], [7.9, 'bounce'], [8.8, 'pit'], [10, 'bat']],
+  },
+  {
+    id: 'hunter-canopy', floor: 5, affinity: ['stunt', 'rescue'], name: 'HUNTER CANOPY', duration: 12.8,
+    challenge: { kind: 'swing', target: 3, label: 'Swing past 3 hunter traps' },
+    events: [[.7, 'vine'], [1.7, 'pit'], [2.7, 'hunter'], [3.8, 'vine'], [4.6, 'coins', 'high', 7], [5.8, 'branch'], [6.8, 'vine'], [7.8, 'pit'], [8.8, 'hunter'], [10, 'coins', 'arc', 7]],
+  },
+  {
+    id: 'paparazzi-pack', floor: 5, affinity: ['mob', 'supply', 'vault', 'mystery'], name: 'PAPARAZZI PACK', duration: 12.6,
+    challenge: { kind: 'stomp', target: 4, label: 'Drop 4 camera hunters' },
+    events: [[.7, 'hunter'], [1.6, 'coins', 'arc', 5], [2.7, 'goblin'], [3.7, 'hunter'], [4.8, 'bounce'], [5.7, 'hunter'], [6.8, 'pit'], [7.8, 'goblin'], [8.8, 'hunter'], [10, 'vineTrap']],
+  },
+  {
+    id: 'royal-gauntlet', floor: 5, affinity: ['supply', 'vault', 'mystery'], name: 'ROYAL GAUNTLET', duration: 12.9,
+    challenge: { kind: 'near', target: 4, label: 'Survive 4 filmed near misses' },
+    events: [[.7, 'rail'], [1.3, 'coins', 'high', 7], [2.8, 'hunter'], [3.8, 'vine'], [4.8, 'pit'], [5.9, 'branch'], [7, 'bounce'], [7.8, 'hunter'], [9, 'goblin'], [10.2, 'coins', 'arc', 7]],
+  },
 ];
 
 const ITEMS = {
@@ -517,8 +638,33 @@ class Player {
     this.dashCooldown = 0;
     this.landSquash = 0;
     this.runFrame = 0;
+    this.swingFeature = null;
+    this.swingTime = 0;
+    this.grindFeature = null;
+    this.grindScored = false;
+    this.vehicleTime = 0;
   }
   jump() {
+    if (this.swingFeature) {
+      this.swingFeature = null;
+      this.swingTime = 0;
+      this.vy = -390;
+      this.airborne = true;
+      this.jumps = 1;
+      this.game.addViewers(90, 'VINE LAUNCH');
+      Audio.jump();
+      return;
+    }
+    if (this.grindFeature) {
+      this.grindFeature = null;
+      this.grindScored = false;
+      this.vy = -360;
+      this.airborne = true;
+      this.jumps = 1;
+      this.game.addViewers(65, 'RAIL POP');
+      Audio.jump();
+      return;
+    }
     const maxJumps = 2 + this.bonusJumps;
     if (!this.airborne || this.jumps < maxJumps) {
       this.slideTime = 0;
@@ -530,6 +676,12 @@ class Player {
     }
   }
   dive() {
+    if (this.swingFeature || this.grindFeature) {
+      this.swingFeature = null;
+      this.grindFeature = null;
+      this.grindScored = false;
+      this.airborne = true;
+    }
     if (this.airborne) {
       this.vy = Math.max(430, this.vy);
       this.game.diveActive = true;
@@ -541,6 +693,9 @@ class Player {
   }
   dash() {
     if (this.dashCooldown > 0) return;
+    this.swingFeature = null;
+    this.grindFeature = null;
+    this.grindScored = false;
     this.dashCooldown = 3.2;
     this.dashTime = .38;
     this.invincible = Math.max(this.invincible, .42);
@@ -555,6 +710,32 @@ class Player {
     this.dashCooldown = Math.max(0, this.dashCooldown - dt);
     this.slideTime = Math.max(0, this.slideTime - dt);
     this.landSquash = Math.max(0, this.landSquash - dt * 5);
+    this.vehicleTime = Math.max(0, this.vehicleTime - dt);
+    if (this.swingFeature?.on) {
+      this.swingTime += dt;
+      const phase = Math.min(1, this.swingTime / 1.05);
+      this.y = GROUND - 83 - Math.sin(phase * Math.PI) * 34;
+      this.vy = 0;
+      this.airborne = true;
+      if (phase >= 1) this.jump();
+      return;
+    }
+    if (this.grindFeature?.on && this.x + this.w > this.grindFeature.x && this.x < this.grindFeature.x + this.grindFeature.w) {
+      this.y = this.grindFeature.y - this.h + 3;
+      this.vy = 0;
+      this.airborne = true;
+      if (!this.grindScored) {
+        this.grindScored = true;
+        this.game.progressChallenge('grind');
+        this.game.addViewers(100, 'RAIL GRIND');
+      }
+      return;
+    }
+    if (this.grindFeature) {
+      this.grindFeature = null;
+      this.grindScored = false;
+      this.vy = -245;
+    }
     if (this.airborne) {
       this.vy += 980 * dt;
       this.y += this.vy * dt;
@@ -590,36 +771,47 @@ class Player {
     this.drawBody(this.x, this.y, sliding);
   }
   drawBody(x, y, sliding) {
+    if (this.vehicleTime > 0) {
+      this.drawHero(x + 1, y - 2, false);
+      ctx.fillStyle = '#303943'; ctx.fillRect(x - 8, GROUND - 17, 37, 12);
+      ctx.fillStyle = '#91a4ad'; ctx.fillRect(x - 5, GROUND - 15, 31, 3);
+      ctx.fillStyle = '#0b0d12'; ctx.fillRect(x - 3, GROUND - 6, 8, 7); ctx.fillRect(x + 18, GROUND - 6, 8, 7);
+      return;
+    }
     if (sliding) {
-      y = GROUND - 16;
-      ctx.fillStyle = '#d89970'; ctx.fillRect(x + 3, y + 3, 13, 8);
-      ctx.fillStyle = '#37231d'; ctx.fillRect(x + 2, y + 2, 8, 3);
-      ctx.fillStyle = '#d54661'; ctx.fillRect(x + 8, y + 10, 15, 6);
-      ctx.fillStyle = '#f0bd91'; ctx.fillRect(x + 20, y + 12, 8, 4);
-      this.drawDonut(x + 7, y - 5);
+      y = GROUND - 17;
+      ctx.fillStyle = '#c88762'; ctx.fillRect(x + 2, y + 3, 10, 8);
+      ctx.fillStyle = '#211a1b'; ctx.fillRect(x + 1, y + 1, 11, 4);
+      ctx.fillStyle = '#7d3139'; ctx.fillRect(x + 9, y + 9, 16, 7);
+      ctx.fillStyle = '#e3a77d'; ctx.fillRect(x + 23, y + 12, 7, 3);
+      this.drawDonut(x + 4, y - 7);
       return;
     }
     const squash = Math.round(this.landSquash * 8);
     y += squash;
-    ctx.fillStyle = '#d89970'; ctx.fillRect(x + 5, y + 2, 10, 10);
-    ctx.fillStyle = '#37231d'; ctx.fillRect(x + 4, y + 1, 11, 3);
-    ctx.fillStyle = '#fff'; ctx.fillRect(x + 12, y + 5, 2, 2);
-    ctx.fillStyle = '#d89970'; ctx.fillRect(x + 3, y + 12, 14, 11);
-    ctx.fillStyle = '#d54661'; ctx.fillRect(x + 3, y + 21, 14, 6);
     const step = Math.floor(this.runFrame) % 2;
-    ctx.fillStyle = '#d89970';
-    ctx.fillRect(x + (step ? 2 : 5), y + 27, 5, 3);
-    ctx.fillRect(x + (step ? 12 : 9), y + 27, 5, 3);
-    ctx.fillStyle = '#f0bd91';
-    ctx.fillRect(x + (step ? 0 : 3), y + 29, 8, 2);
-    ctx.fillRect(x + (step ? 11 : 8), y + 29, 8, 2);
-    this.drawDonut(x + 12, y + 7);
+    ctx.fillStyle = '#20191a'; ctx.fillRect(x + 4, y, 12, 5); ctx.fillRect(x + 3, y + 3, 4, 6);
+    ctx.fillStyle = '#c88762'; ctx.fillRect(x + 6, y + 4, 10, 8); ctx.fillRect(x + 13, y + 9, 5, 3);
+    ctx.fillStyle = '#3a2320'; ctx.fillRect(x + 13, y + 6, 4, 2); ctx.fillRect(x + 15, y + 10, 3, 2);
+    ctx.fillStyle = '#5d272b'; ctx.fillRect(x + 4, y + 12, 13, 11);
+    ctx.fillStyle = '#bc8c4c'; ctx.fillRect(x + 5, y + 14, 3, 10); ctx.fillRect(x + 8, y + 18, 8, 3);
+    ctx.fillStyle = '#c88762'; ctx.fillRect(x + (step ? 1 : 15), y + 13, 4, 10);
+    ctx.fillStyle = '#ddd2b6'; ctx.fillRect(x + (step ? 0 : 14), y + 21, 6, 3);
+    ctx.fillStyle = '#b62f47'; ctx.fillRect(x + 3, y + 23, 15, 5);
+    ctx.fillStyle = '#f0c36a'; ctx.fillRect(x + 6, y + 24, 2, 2); ctx.fillRect(x + 12, y + 24, 2, 2);
+    ctx.fillStyle = '#c88762';
+    ctx.fillRect(x + (step ? 3 : 6), y + 28, 4, 3);
+    ctx.fillRect(x + (step ? 13 : 10), y + 28, 4, 3);
+    ctx.fillStyle = '#dfaa80';
+    ctx.fillRect(x + (step ? 0 : 4), y + 30, 8, 2);
+    ctx.fillRect(x + (step ? 11 : 8), y + 30, 8, 2);
+    this.drawDonut(x - 5, y + 7);
   }
   drawDonut(x, y) {
-    ctx.fillStyle = '#f4eee4'; ctx.fillRect(x, y, 9, 7);
-    ctx.fillRect(x, y - 2, 3, 3); ctx.fillRect(x + 6, y - 2, 3, 3);
-    ctx.fillStyle = '#d0ac3d'; ctx.fillRect(x + 2, y - 3, 5, 2);
-    ctx.fillStyle = '#33243b'; ctx.fillRect(x + 2, y + 3, 2, 2); ctx.fillRect(x + 6, y + 3, 2, 2);
+    ctx.fillStyle = '#f3eee4'; ctx.fillRect(x, y, 10, 8);
+    ctx.fillRect(x, y - 3, 3, 4); ctx.fillRect(x + 7, y - 3, 3, 4);
+    ctx.fillStyle = '#d7ae35'; ctx.fillRect(x + 2, y - 5, 6, 2); ctx.fillRect(x + 3, y - 7, 2, 2); ctx.fillRect(x + 6, y - 7, 2, 2);
+    ctx.fillStyle = '#32243c'; ctx.fillRect(x + 2, y + 3, 2, 2); ctx.fillRect(x + 7, y + 3, 2, 2); ctx.fillRect(x + 5, y + 6, 2, 1);
   }
 }
 
@@ -638,6 +830,7 @@ const Game = {
   speed: 122,
   scoreMultiplier: 1,
   hazards: [],
+  features: [],
   pickups: [],
   particles: [],
   inventory: [],
@@ -656,12 +849,13 @@ const Game = {
     Object.assign(this, {
       state: 'RUNNING', time: 0, floor: 1, roomsOnFloor: 0, roomsTotal: 0,
       viewers: 0, displayViewers: 0, hp: 4, maxHp: 4, speed: 122,
-      hazards: [], pickups: [], particles: [], inventory: [], boxes: [],
-      runAchievements: new Set(), achievementQueue: [], classId: null,
+      hazards: [], features: [], pickups: [], particles: [], inventory: [], boxes: [],
+      runAchievements: new Set(), achievementQueue: [], viewerMilestones: new Set(), classId: null,
       donutMode: 'ZAP', donutCooldown: 0, nearMisses: 0, combo: 0, comboTimer: 0,
       teamwork: 0, teamBoost: 0, allyShield: 0, magnetTime: 0, scoutTime: 0,
       slowTime: 0, greaseReady: false, trapArmed: false, greaseKills: 0,
-      nextSponsorAt: 1000, pendingSponsor: false, sponsorModifier: null,
+      sponsorModifier: null, sponsorOfferedFloor: 0, challengesCompleted: 0,
+      blueprintHistory: [],
       daily, shake: 0, flash: 0, currentRoute: ROUTES[0], afterSafe: 'door',
       achievementShowing: false,
     });
@@ -678,28 +872,47 @@ const Game = {
     this.state = 'RUNNING';
     this.hideAllOverlays();
     $('hud').classList.remove('hidden');
-    this.currentRoute = { ...route };
+    this.currentRoute = { ...route, mechanicId: route.id };
     if (route.id === 'mystery') {
       const reveal = RNG.pick(ROUTES.filter(item => item.id !== 'mystery'));
-      this.currentRoute = { ...reveal, id: 'mystery', title: 'UNMARKED: ' + reveal.title };
+      this.currentRoute = { ...reveal, id: 'mystery', mechanicId: reveal.id, title: 'UNMARKED: ' + reveal.title };
       this.unlockAchievement('mystery');
     }
     this.roomTime = 0;
-    this.roomDuration = 10.5;
-    this.spawnTimer = .8;
     this.roomEnded = false;
     this.hazards = [];
+    this.features = [];
     this.pickups = [];
     this.player.x = 48;
     this.player.bonusJumps = 0;
-    this.roomStats = { damage: 0, kills: 0, near: 0, slides: 0, stomps: 0, rescue: false };
+    this.player.swingFeature = null;
+    this.player.grindFeature = null;
+    this.player.vehicleTime = 0;
+    this.rescueSpawned = false;
+    this.roomStats = { damage: 0, kills: 0, near: 0, slides: 0, stomps: 0, rescue: false, coins: 0, motes: 0, smashes: 0, bounces: 0, swings: 0, grinds: 0 };
+    const floorNumber = (this.floor - 1) % FLOORS.length + 1;
+    const floorRooms = ROOM_BLUEPRINTS.filter(entry => entry.floor === floorNumber);
+    const preferred = floorRooms.filter(entry => entry.affinity.includes(this.currentRoute.mechanicId));
+    const pool = preferred.length ? preferred : floorRooms;
+    const fresh = pool.filter(entry => !this.blueprintHistory.slice(-2).includes(entry.id));
+    this.blueprint = RNG.pick(fresh.length ? fresh : pool);
+    this.blueprintHistory.push(this.blueprint.id);
+    this.roomDuration = this.blueprint.duration;
+    this.roomEvents = this.blueprint.events.map(event => ({ event, fired: false }));
+    this.challenge = { ...this.blueprint.challenge, progress: 0, complete: false };
+    if (this.sponsorModifier?.extraWave) {
+      const extra = RNG.pick(this.floorData().hazards.filter(type => type !== 'pit'));
+      this.roomEvents.push({ event: [7.5, extra], fired: false });
+    }
     const floor = this.floorData();
-    this.scoreMultiplier = this.currentRoute.id === 'stunt' ? 2 : 1;
+    this.scoreMultiplier = this.currentRoute.mechanicId === 'stunt' ? 2 : 1;
     if (this.sponsorModifier?.double) this.scoreMultiplier *= 2;
     if (floor.name === 'HUNTING GARDENS' && this.currentRoute.kind === 'danger') this.scoreMultiplier *= 2;
-    if (this.sponsorModifier?.noCoins) this.noCoins = true; else this.noCoins = false;
-    $('roomGoal').textContent = `${this.currentRoute.title} · ${floor.rule}`;
-    this.say('SYSTEM', `Room ${this.roomsOnFloor + 1}/${ROOMS_PER_FLOOR}. ${this.currentRoute.description}`);
+    this.noCoins = false;
+    this.coinScale = this.sponsorModifier?.coinScale || 1;
+    $('roomGoal').textContent = `${this.blueprint.name} · ${this.challenge.label.toUpperCase()}`;
+    this.say('SYSTEM', `Room ${this.roomsOnFloor + 1}/${ROOMS_PER_FLOOR}: ${this.blueprint.name}. Bonus: ${this.challenge.label}.`);
+    if (this.sponsorModifier) this.toast(`CONTRACT ${this.sponsorModifier.roomsLeft} ROOM${this.sponsorModifier.roomsLeft === 1 ? '' : 'S'} · ${this.sponsorModifier.label}`);
   },
 
   floorData() { return FLOORS[(this.floor - 1) % FLOORS.length]; },
@@ -714,7 +927,7 @@ const Game = {
     if (this.state !== 'RUNNING' && this.state !== 'BOSS') return;
     this.time += dt;
     this.player.update(dt);
-    this.donutCooldown = Math.max(0, this.donutCooldown - dt);
+    this.donutCooldown = Math.max(0, this.donutCooldown - dt * (this.sponsorModifier?.donutRate || 1));
     this.comboTimer -= dt;
     if (this.comboTimer <= 0) this.combo = Math.max(0, this.combo - dt * .8);
     this.teamBoost = Math.max(0, this.teamBoost - dt);
@@ -732,27 +945,24 @@ const Game = {
 
     if (this.state === 'BOSS') this.updateBoss(dt);
     else this.updateRoom(dt);
+    this.updateFeatures(dt);
     this.updateHazards(dt);
     this.updatePickups(dt);
     this.updateParticles(dt);
     this.addViewers(dt * (7 + this.floor * 1.4));
-    if (this.viewers >= this.nextSponsorAt) {
-      this.pendingSponsor = true;
-      this.nextSponsorAt = Math.floor(this.nextSponsorAt * 1.9 + 400);
-    }
     if (this.viewers >= 5000) this.unlockAchievement('viewers');
     this.updateHud();
   },
 
   updateRoom(dt) {
     this.roomTime += dt;
-    this.spawnTimer -= dt;
-    if (this.spawnTimer <= 0 && this.roomTime < 8.7) {
-      this.spawnWave();
-      const density = this.currentRoute.kind === 'safe' ? 1.7 : 1.35;
-      this.spawnTimer = density + RNG.next() * .55;
+    for (const scheduled of this.roomEvents) {
+      if (!scheduled.fired && this.roomTime >= scheduled.event[0]) {
+        scheduled.fired = true;
+        this.spawnRoomEvent(scheduled.event);
+      }
     }
-    if (this.currentRoute.id === 'rescue' && !this.rescueSpawned && this.roomTime > 6.5) {
+    if (this.currentRoute.mechanicId === 'rescue' && !this.rescueSpawned && this.roomTime > 6.5) {
       this.rescueSpawned = true;
       this.pickups.push({ type: 'crawler', x: W + 10, y: GROUND - 18, w: 12, h: 18, on: true });
       this.say('DONUT', 'There! Someone is still moving. Inconveniently heroic time, Carl.');
@@ -762,25 +972,88 @@ const Game = {
     }
   },
 
-  spawnWave() {
-    const types = this.floorData().hazards;
-    const first = RNG.pick(types);
-    this.spawnHazard(first, W + 8);
-    const dangerous = this.currentRoute.kind !== 'safe';
-    if (dangerous && RNG.next() < .46) {
-      const second = RNG.pick(types);
-      this.spawnHazard(second, W + 62 + RNG.int(22));
+  spawnRoomEvent([, type, option, count]) {
+    if (type === 'coins') {
+      this.spawnCoins(option, count);
+      return;
     }
-    if (!this.noCoins) {
-      const arc = first === 'pit' || first === 'log';
-      const coinCount = ['vault', 'supply'].includes(this.currentRoute.id) ? 6 : 4;
-      for (let i = 0; i < coinCount; i++) {
-        this.pickups.push({
-          type: 'coin', x: W + 15 + i * 12,
-          y: arc ? GROUND - 39 - Math.sin(i / 3 * Math.PI) * 30 : GROUND - 19,
-          w: 5, h: 8, on: true, spin: RNG.next() * 6,
-        });
+    if (type === 'motes') {
+      for (let i = 0; i < option; i++) this.pickups.push({ type: 'mote', x: W + 10 + i * 18, y: GROUND - 56 - (i % 2) * 23, w: 7, h: 7, on: true, spin: i });
+      return;
+    }
+    if (type === 'vine') {
+      this.features.push({ type: 'swingVine', x: W + 12, y: 88, w: 14, h: 190, on: true, used: false, sway: RNG.next() * 5 });
+      return;
+    }
+    if (type === 'rail') {
+      this.features.push({ type: 'grindRail', x: W + 8, y: GROUND - 60, w: 118, h: 5, on: true });
+      return;
+    }
+    if (type === 'bounce') {
+      this.features.push({ type: 'bouncePad', x: W + 8, y: GROUND - 7, w: 25, h: 7, on: true, used: false });
+      return;
+    }
+    if (type === 'vehicle') {
+      this.pickups.push({ type: 'vehicle', x: W + 10, y: GROUND - 19, w: 30, h: 19, on: true, spin: 0 });
+      return;
+    }
+    if (type === 'vineTrap') type = 'vine';
+    this.spawnHazard(type, W + 8);
+  },
+
+  spawnCoins(path = 'low', count = 5) {
+    if (this.noCoins) return;
+    for (let i = 0; i < count; i++) {
+      let y = GROUND - 20;
+      if (path === 'high') y = GROUND - 82 - Math.sin(i / Math.max(1, count - 1) * Math.PI) * 18;
+      if (path === 'arc') y = GROUND - 34 - Math.sin(i / Math.max(1, count - 1) * Math.PI) * 50;
+      this.pickups.push({ type: 'coin', x: W + 10 + i * 13, y, w: 6, h: 8, on: true, spin: RNG.next() * 6 });
+    }
+  },
+
+  updateFeatures(dt) {
+    const player = this.player;
+    for (const feature of this.features) {
+      if (!feature.on) continue;
+      feature.x -= this.worldSpeed * dt;
+      if (feature.type === 'swingVine' && !feature.used && player.airborne && player.vy < 260 && Math.abs(feature.x + 7 - (player.x + player.w / 2)) < 17 && player.y < GROUND - 34) {
+        feature.used = true;
+        player.swingFeature = feature;
+        player.swingTime = 0;
+        this.roomStats.swings += 1;
+        this.progressChallenge('swing');
+        this.addViewers(120, 'VINE CATCH');
+        Audio.tone(440, .09, 'triangle', .04);
       }
+      if (feature.type === 'grindRail' && !player.grindFeature && player.vy >= 0 && player.x + player.w > feature.x && player.x < feature.x + feature.w && player.y + player.h >= feature.y - 5 && player.y + player.h <= feature.y + 13) {
+        player.grindFeature = feature;
+        player.grindScored = false;
+      }
+      if (feature.type === 'bouncePad' && !feature.used && player.x + player.w > feature.x && player.x < feature.x + feature.w && player.y + player.h > feature.y - 7 && player.vy >= 0) {
+        feature.used = true;
+        player.vy = -510;
+        player.airborne = true;
+        player.jumps = 0;
+        this.roomStats.bounces += 1;
+        this.progressChallenge('bounce');
+        this.addViewers(85, 'SPORE BOUNCE');
+        this.particlesAt(feature.x + 12, feature.y, '#9be56d', 11);
+      }
+      if (feature.x + feature.w < -30) feature.on = false;
+    }
+    this.features = this.features.filter(feature => feature.on);
+  },
+
+  progressChallenge(kind, amount = 1) {
+    if (!this.challenge || this.challenge.complete || this.challenge.kind !== kind) return;
+    this.challenge.progress = Math.min(this.challenge.target, this.challenge.progress + amount);
+    if (this.challenge.progress >= this.challenge.target) {
+      this.challenge.complete = true;
+      this.challengesCompleted += 1;
+      this.addViewers(400 + this.floor * 75, 'ROOM OBJECTIVE');
+      if (this.challengesCompleted % 3 === 0) this.awardBox('silver');
+      this.toast(`OBJECTIVE COMPLETE · +${400 + this.floor * 75} VIEWERS${this.challengesCompleted % 3 === 0 ? ' · SILVER BOX' : ''}`);
+      Audio.achievement();
     }
   },
 
@@ -788,11 +1061,12 @@ const Game = {
     const base = { type, x, on: true, passed: false, friendly: false, age: 0, vx: 0 };
     const shapes = {
       log: { y: GROUND - 13, w: 25, h: 13 }, snake: { y: GROUND - 8, w: 18, h: 8 },
-      pit: { y: GROUND - 3, w: 31, h: 7 }, branch: { y: GROUND - 48, w: 28, h: 17 },
-      flame: { y: GROUND - 34, w: 13, h: 34, telegraph: .65 }, crusher: { y: GROUND - 54, w: 25, h: 24 },
+      pit: { y: GROUND - 3, w: 31, h: 7 }, branch: { y: GROUND - 30, w: 28, h: 14 },
+      flame: { y: GROUND - 34, w: 13, h: 34, telegraph: .65 }, crusher: { y: GROUND - 50, w: 25, h: 34 },
       bat: { y: GROUND - 31, w: 18, h: 12 }, cart: { y: GROUND - 17, w: 34, h: 17 },
       barrier: { y: GROUND - 25, w: 14, h: 25 }, hunter: { y: GROUND - 27, w: 15, h: 27 },
-      vine: { y: GROUND - 12, w: 13, h: 12 },
+      vine: { y: GROUND - 12, w: 13, h: 12 }, goblin: { y: GROUND - 19, w: 17, h: 19 },
+      hunterShot: { y: GROUND - 40, w: 20, h: 5 },
     };
     this.hazards.push({ ...base, ...(shapes[type] || shapes.log) });
   },
@@ -823,12 +1097,17 @@ const Game = {
         const overPit = playerBox.x + playerBox.w > hazard.x && playerBox.x < hazard.x + hazard.w;
         if (overPit && !this.player.airborne && this.player.invincible <= 0) this.damage('the floor opened');
       } else if (hazard.telegraph <= 0 && !hazard.friendly && intersects(playerBox, hazard)) {
-        const stompable = ['log', 'snake', 'cart', 'hunter', 'vine'].includes(hazard.type);
-        if (stompable && this.player.airborne && this.player.vy > 80 && playerBox.y + playerBox.h < hazard.y + hazard.h * .72) {
+        const stompable = ['log', 'snake', 'cart', 'hunter', 'vine', 'goblin'].includes(hazard.type);
+        if (this.player.vehicleTime > 0 && hazard.type !== 'crusher' && hazard.type !== 'flame') {
+          this.destroyHazard(hazard, 'CART SMASH');
+          this.roomStats.smashes += 1;
+          this.progressChallenge('smash');
+        } else if (stompable && this.player.airborne && this.player.vy > 80 && playerBox.y + playerBox.h < hazard.y + hazard.h * .72) {
           this.destroyHazard(hazard, 'STOMP');
           this.player.vy = -270;
           this.player.airborne = true;
           this.roomStats.stomps += 1;
+          this.progressChallenge('stomp');
         } else if (this.trapArmed && hazard.y + hazard.h >= GROUND - 30) {
           this.trapArmed = false;
           this.destroyHazard(hazard, 'SNARED');
@@ -870,6 +1149,7 @@ const Game = {
   nearMiss(hazard) {
     this.nearMisses += 1;
     this.roomStats.near += 1;
+    this.progressChallenge('near');
     this.combo += 1;
     this.comboTimer = 3.5;
     const classBonus = this.classId === 'showboat' ? 1.75 : 1;
@@ -889,12 +1169,33 @@ const Game = {
         pickup.x += (this.player.x - pickup.x) * dt * 5;
         pickup.y += (this.player.y + 12 - pickup.y) * dt * 5;
       }
-      if (intersects(playerBox, pickup) || (pickup.type === 'crawler' && Math.abs(pickup.x - this.player.x) < 22)) {
+      const touching = intersects(playerBox, pickup) || (pickup.type === 'crawler' && Math.abs(pickup.x - this.player.x) < 22);
+      const canCollect = pickup.type !== 'switch' || this.player.vehicleTime > 0;
+      if (touching && canCollect) {
         pickup.on = false;
         if (pickup.type === 'coin') {
-          this.addViewers(this.currentRoute.id === 'vault' ? 22 : 10, 'LOOT');
+          this.roomStats.coins += 1;
+          this.progressChallenge('coin');
+          this.addViewers((this.currentRoute.mechanicId === 'vault' ? 22 : 10) * (this.coinScale || 1), 'LOOT');
           this.donutCooldown = Math.max(0, this.donutCooldown - .25);
           Audio.coin();
+        } else if (pickup.type === 'mote') {
+          this.roomStats.motes += 1;
+          this.progressChallenge('mote');
+          this.scoutTime = Math.max(this.scoutTime, 1.4);
+          this.addViewers(35, 'SIGNAL MOTE');
+          Audio.coin();
+        } else if (pickup.type === 'vehicle') {
+          this.player.vehicleTime = 7;
+          this.player.invincible = Math.max(this.player.invincible, .7);
+          this.addViewers(160, 'CART HIJACK');
+          this.say('DONUT', 'You have acquired a vehicle. This has never improved your judgment.');
+          Audio.box();
+        } else if (['coolant', 'signal', 'switch'].includes(pickup.type)) {
+          this.bossObjective = (this.bossObjective || 0) + 1;
+          this.hitBoss(1, true);
+          this.addViewers(120, `${pickup.type.toUpperCase()} SECURED`);
+          Audio.box();
         } else if (pickup.type === 'crawler') {
           this.roomStats.rescue = true;
           this.allyShield += 1;
@@ -930,12 +1231,12 @@ const Game = {
     this.roomsTotal += 1;
     if (this.currentRoute.kind === 'danger' && this.roomStats.damage === 0) {
       this.unlockAchievement('noHitDanger');
-      if (this.currentRoute.id === 'mob') this.awardBox('silver');
+      if (this.currentRoute.mechanicId === 'mob') this.awardBox('silver');
     }
-    if (this.currentRoute.id === 'vault') this.awardBox(RNG.next() < .24 ? 'gold' : 'bronze');
+    if (this.currentRoute.mechanicId === 'vault') this.awardBox(RNG.next() < .24 ? 'gold' : 'bronze');
     if (this.hp === 1) this.unlockAchievement('oneHeart');
-    this.sponsorModifier = null;
     this.rescueSpawned = false;
+    this.settleSponsorRoom();
     if (this.roomsOnFloor >= ROOMS_PER_FLOOR) this.queueInterlude('boss');
     else if (this.roomsOnFloor === 2) this.queueInterlude('safe');
     else this.queueInterlude('door');
@@ -943,8 +1244,20 @@ const Game = {
 
   queueInterlude(next) {
     this.interludeNext = next;
-    if (this.pendingSponsor) this.showSponsor();
+    if (this.roomsOnFloor === 2 && this.sponsorOfferedFloor !== this.floor) {
+      this.sponsorOfferedFloor = this.floor;
+      this.showSponsor();
+    }
     else this.continueInterlude();
+  },
+
+  settleSponsorRoom() {
+    if (!this.sponsorModifier) return;
+    this.sponsorModifier.roomsLeft -= 1;
+    if (this.sponsorModifier.roomsLeft <= 0) {
+      this.toast('SPONSOR CONTRACT COMPLETE');
+      this.sponsorModifier = null;
+    }
   },
 
   continueInterlude() {
@@ -1079,28 +1392,22 @@ const Game = {
   },
 
   showSponsor() {
-    this.pendingSponsor = false;
     this.state = 'SPONSOR';
     this.showOverlay('sponsor');
-    $('sponsorText').textContent = 'The audience enjoyed that. A corporation would now like to make survival worse.';
-    const offers = RNG.shuffle([
-      { id: 'double', title: 'DOUBLE OR TROUBLE', text: 'Double viewers next room; hazards move 25% faster.' },
-      { id: 'medical', title: 'MEDICAL MIRACLE', text: 'Restore all hearts; next room contains no coins.' },
-      { id: 'crate', title: 'MYSTERY CRATE', text: 'Take a Gold Box now; surrender one heart.' },
-      { id: 'donut', title: 'ROYAL ENDORSEMENT', text: 'Refresh Donut; dangerous routes get denser.' },
-    ]).slice(0, 2);
-    $('sponsorChoices').innerHTML = offers.map(offer => `<button data-offer="${offer.id}"><b>${offer.title}</b><br><small>${offer.text}</small></button>`).join('');
+    $('sponsorText').textContent = 'One contract per floor. Every effect is guaranteed, timed, and displayed during play.';
+    const offers = RNG.shuffle(SPONSOR_OFFERS).slice(0, 2);
+    $('sponsorChoices').innerHTML = offers.map(offer => `<button data-offer="${offer.id}"><b>${offer.title}</b><span>${offer.now}</span><small>${offer.next}</small></button>`).join('');
     document.querySelectorAll('[data-offer]').forEach(button => {
       button.onclick = () => this.acceptSponsor(button.dataset.offer);
     });
   },
 
   acceptSponsor(id) {
-    if (id === 'double') this.sponsorModifier = { double: true, threat: 1.25 };
-    if (id === 'medical') { this.hp = this.maxHp; this.sponsorModifier = { noCoins: true }; }
-    if (id === 'crate') { this.hp = Math.max(1, this.hp - 1); this.awardBox('gold'); }
-    if (id === 'donut') { this.donutCooldown = 0; this.sponsorModifier = { threat: 1.18 }; }
-    this.say('ANNOUNCER', 'Contract accepted. Fine print has been released into the ventilation system.');
+    const offer = SPONSOR_OFFERS.find(entry => entry.id === id);
+    if (!offer) return;
+    offer.apply(this);
+    this.say('ANNOUNCER', `${offer.title} accepted. The exact fine print is now pinned to the broadcast.`);
+    this.toast(`${offer.title} · ${this.sponsorModifier.label}`);
     this.continueInterlude();
   },
 
@@ -1115,40 +1422,91 @@ const Game = {
     this.hideAllOverlays();
     $('hud').classList.remove('hidden');
     this.hazards = [];
+    this.features = [];
     this.pickups = [];
     this.currentRoute = { id: 'boss', title: this.floorData().boss, kind: 'danger', threat: 1 };
     this.scoreMultiplier = this.sponsorModifier?.double ? 2 : 1;
+    const kind = (this.floor - 1) % FLOORS.length;
+    const bossHealth = [3, 4, 4, 4, 5][kind];
     this.boss = {
       name: this.floorData().boss, x: W - 51, y: GROUND - 43, w: 39, h: 43,
-      hp: 3 + Math.min(3, this.floor - 1), maxHp: 3 + Math.min(3, this.floor - 1),
-      timer: 2.2, vulnerable: 0, hitCooldown: 0, defeated: false,
+      hp: bossHealth, maxHp: bossHealth, kind, mode: 'idle', modeTimer: 0,
+      timer: 1.8, vulnerable: 0, hitCooldown: 0, defeated: false,
     };
     this.bossNoHit = true;
     this.bossWave = 0;
+    this.bossObjective = 0;
     this.roomStats = { damage: 0, kills: 0, near: 0, slides: 0, stomps: 0, rescue: false };
-    $('roomGoal').textContent = `BOSS · ${this.boss.name}`;
-    this.say('ANNOUNCER', `${this.boss.name} has entered the set. Ratings have become medically significant.`);
+    const instructions = [
+      'DODGE THE RAM · STOMP THE STALLED ENGINE',
+      'COLLECT 4 COOLANT VALVES',
+      'CATCH 4 SIGNAL MOTES TO REVEAL THE QUEEN',
+      'HIJACK THE CART · HIT 4 TRACK SWITCHES',
+      'DODGE THE SHOT · STRIKE DURING RELOAD',
+    ];
+    this.bossInstruction = instructions[kind];
+    $('roomGoal').textContent = `BOSS · ${this.bossInstruction}`;
+    this.say('ANNOUNCER', `${this.boss.name}. ${this.bossInstruction}.`);
   },
 
   updateBoss(dt) {
     const boss = this.boss;
     if (!boss || boss.defeated) return;
     boss.timer -= dt;
+    boss.modeTimer -= dt;
     boss.vulnerable = Math.max(0, boss.vulnerable - dt);
     boss.hitCooldown = Math.max(0, boss.hitCooldown - dt);
-    if (boss.timer <= 0) {
-      boss.vulnerable = 1.65;
-      boss.timer = 4.5 - Math.min(1.2, this.floor * .15);
+
+    if (boss.kind === 0) {
+      if (boss.mode === 'idle' && boss.timer <= 0) {
+        this.spawnHazard(this.bossWave % 2 ? 'goblin' : 'log', W + 8);
+        boss.mode = 'telegraph'; boss.modeTimer = 1.15; this.bossWave += 1;
+        this.say('SYSTEM', 'DOZER RAM INCOMING · JUMP CLEAR!');
+      } else if (boss.mode === 'telegraph' && boss.modeTimer <= 0) {
+        boss.mode = 'ram'; boss.modeTimer = 1.15; boss.x = W - 51;
+      } else if (boss.mode === 'ram') {
+        boss.x -= 185 * dt;
+        if (boss.x <= 39 || boss.modeTimer <= 0) {
+          boss.x = 42; boss.mode = 'stunned'; boss.vulnerable = 1.75;
+          this.shake = .8; this.say('SYSTEM', 'ENGINE STALLED · STOMP NOW!');
+        }
+      } else if (boss.mode === 'stunned' && boss.vulnerable <= 0) {
+        boss.mode = 'idle'; boss.x = W - 51; boss.timer = 1.5;
+      }
+    } else if (boss.timer <= 0) {
       this.bossWave += 1;
-      const attacks = this.floorData().hazards.filter(type => type !== 'pit');
-      this.spawnHazard(RNG.pick(attacks), W + 8);
-      if (this.bossWave % 2 === 0) this.spawnHazard('pit', W + 65);
-      this.say('SYSTEM', `${boss.name}: weak point exposed. Try violence with timing.`);
+      if (boss.kind === 1) {
+        this.spawnHazard('flame', W + 8);
+        this.spawnHazard('crusher', W + 78);
+        const high = this.bossWave % 2;
+        this.pickups.push({ type: 'coolant', x: W + 48, y: high ? GROUND - 88 : GROUND - 22, w: 9, h: 13, on: true, spin: 0 });
+        boss.timer = 4.4;
+        this.say('SYSTEM', `COOLANT VALVE ${this.bossObjective + 1}/4 ENTERING THE LINE.`);
+      } else if (boss.kind === 2) {
+        this.spawnHazard('bat', W + 8); this.spawnHazard('bat', W + 70);
+        for (let i = 0; i < 2; i++) this.pickups.push({ type: 'signal', x: W + 35 + i * 36, y: GROUND - 55 - i * 30, w: 8, h: 8, on: true, spin: i });
+        boss.timer = 4.1;
+        this.say('DONUT', 'The signal motes outline her armor. Collect them. Obviously.');
+      } else if (boss.kind === 3) {
+        if (this.player.vehicleTime <= 0) this.pickups.push({ type: 'vehicle', x: W + 8, y: GROUND - 19, w: 30, h: 19, on: true, spin: 0 });
+        this.spawnHazard(this.bossWave % 2 ? 'barrier' : 'cart', W + 76);
+        this.pickups.push({ type: 'switch', x: W + 46, y: GROUND - (this.bossWave % 2 ? 30 : 75), w: 9, h: 12, on: true, spin: 0 });
+        boss.timer = 4.3;
+        this.say('SYSTEM', `TRACK SWITCH ${this.bossObjective + 1}/4 · CART CONTROL RECOMMENDED.`);
+      } else {
+        const shot = { type: 'hunterShot', x: W + 5, y: Math.max(150, this.player.y + 10), w: 24, h: 5, on: true, passed: false, friendly: false, age: 0, vx: 0 };
+        this.hazards.push(shot);
+        boss.vulnerable = 1.25;
+        boss.timer = 3.5;
+        this.say('SYSTEM', 'HUNTER RELOADING · CLOSE THE DISTANCE!');
+      }
     }
-    const targetX = boss.vulnerable > 0 ? 62 : W - 51;
-    boss.x += (targetX - boss.x) * dt * 4;
+    if (boss.kind !== 0) {
+      const targetX = boss.kind === 4 && boss.vulnerable > 0 ? 60 : W - 51;
+      boss.x += (targetX - boss.x) * dt * 4;
+    }
     if (boss.hitCooldown <= 0 && intersects(this.player.box(), boss)) {
-      if (boss.vulnerable > 0 && this.player.airborne && this.player.vy > 60) {
+      if (boss.vulnerable > 0 && this.player.airborne && this.player.vy > 60 && [0, 4].includes(boss.kind)) {
         this.hitBoss(this.classId === 'brawler' ? 2 : 1);
         this.player.vy = -310;
       } else {
@@ -1158,11 +1516,11 @@ const Game = {
     }
   },
 
-  hitBoss(amount = 1) {
-    if (!this.boss || this.boss.defeated || this.boss.hitCooldown > 0) return;
+  hitBoss(amount = 1, objectiveHit = false) {
+    if (!this.boss || this.boss.defeated || (this.boss.hitCooldown > 0 && !objectiveHit)) return;
     this.boss.hp -= amount;
     this.boss.hitCooldown = .55;
-    this.boss.vulnerable = 0;
+    if ([0, 4].includes(this.boss.kind)) this.boss.vulnerable = 0;
     this.shake = .7;
     this.flash = .12;
     this.combo += 1;
@@ -1182,7 +1540,6 @@ const Game = {
     if (this.bossNoHit) this.unlockAchievement('bossClean');
     Audio.achievement();
     this.say('ANNOUNCER', `${this.boss.name} has been reassigned to post-production.`);
-    this.sponsorModifier = null;
     window.setTimeout(() => {
       if (this.state === 'BOSS') this.showSafeRoom('floor');
     }, 1500);
@@ -1370,6 +1727,14 @@ const Game = {
   addViewers(amount, label) {
     const value = amount * (this.scoreMultiplier || 1);
     this.viewers += value;
+    for (const tier of VIEWER_TIERS.slice(1)) {
+      if (this.viewers >= tier.at && !this.viewerMilestones.has(tier.at)) {
+        this.viewerMilestones.add(tier.at);
+        this.boxes.push(tier.reward);
+        this.toast(`${tier.name} REACHED · ${tier.reward.toUpperCase()} BOX`);
+        Audio.achievement();
+      }
+    }
     if (label && value >= 40 && this.state !== 'SAFE') this.floatText(this.player?.x + 12 || 80, this.player?.y || 200, `${label} +${Math.round(value)}`);
   },
 
@@ -1458,6 +1823,7 @@ const Game = {
     $('finalFloor').textContent = this.floor;
     $('finalRooms').textContent = this.roomsTotal;
     $('finalAchievements').textContent = this.runAchievements.size;
+    $('finalChallenges').textContent = this.challengesCompleted;
     $('deathLine').textContent = RNG.pick(DEATH_LINES);
     this.showOverlay('over');
   },
@@ -1514,6 +1880,33 @@ const Game = {
     this.displayViewers += (this.viewers - this.displayViewers) * .18;
     $('viewers').textContent = Math.floor(this.displayViewers).toLocaleString();
     $('boxCount').textContent = `□ ${this.boxes.length}`;
+    let currentTierIndex = 0;
+    VIEWER_TIERS.forEach((tier, index) => { if (this.viewers >= tier.at) currentTierIndex = index; });
+    const currentTier = VIEWER_TIERS[currentTierIndex];
+    const nextTier = VIEWER_TIERS[currentTierIndex + 1];
+    $('viewerTier').textContent = currentTier.name;
+    if (nextTier) {
+      const progress = (this.viewers - currentTier.at) / (nextTier.at - currentTier.at) * 100;
+      $('milestone').style.setProperty('--viewer-progress', `${Math.max(0, Math.min(100, progress))}%`);
+      $('viewerNext').textContent = `${Math.max(0, Math.ceil(nextTier.at - this.viewers)).toLocaleString()} TO ${nextTier.name}`;
+    } else {
+      $('milestone').style.setProperty('--viewer-progress', '100%');
+      $('viewerNext').textContent = 'MAXIMUM INFAMY';
+    }
+    const challengePanel = $('challengeStatus');
+    if (this.state === 'BOSS' && this.boss) {
+      challengePanel.classList.toggle?.('done', this.boss.defeated);
+      $('challengeLabel').textContent = 'BOSS OBJECTIVE';
+      $('challengeText').textContent = `${this.bossInstruction} · HP ${Math.max(0, this.boss.hp)}/${this.boss.maxHp}`;
+    } else if (this.challenge) {
+      challengePanel.classList.toggle?.('done', this.challenge.complete);
+      $('challengeLabel').textContent = this.challenge.complete ? 'OBJECTIVE COMPLETE' : 'ROOM OBJECTIVE';
+      $('challengeText').textContent = `${this.challenge.label} · ${this.challenge.progress}/${this.challenge.target}`;
+    }
+    if (this.sponsorModifier) {
+      $('sponsorStatus').classList.remove('hidden');
+      $('sponsorStatus').textContent = `CONTRACT · ${this.sponsorModifier.label} · ${this.sponsorModifier.roomsLeft} ROOM${this.sponsorModifier.roomsLeft === 1 ? '' : 'S'}`;
+    } else $('sponsorStatus').classList.add('hidden');
     $('donutMode').textContent = this.donutMode;
     $('donutBtn').style.setProperty('--cooldown', `${100 * (1 - Math.min(1, this.donutCooldown / 9))}%`);
     $('donutBtn').disabled = this.donutCooldown > 0;
@@ -1533,6 +1926,7 @@ const Game = {
     ctx.save();
     ctx.translate(Math.round(shakeX), Math.round(shakeY));
     this.drawBackground(floor);
+    for (const feature of this.features) this.drawFeature(feature);
     for (const pickup of this.pickups) this.drawPickup(pickup);
     for (const hazard of this.hazards) this.drawHazard(hazard);
     if (this.state === 'BOSS' && this.boss) this.drawBoss(this.boss, floor);
@@ -1575,6 +1969,46 @@ const Game = {
     ctx.fillStyle = '#fff';
     for (let y = 82; y < 305; y += 22) for (let x = (y % 44); x < W; x += 46) ctx.fillRect(x, y, 2, 2);
     ctx.globalAlpha = 1;
+    const biome = (this.floor - 1) % FLOORS.length;
+    if (biome === 0) {
+      ctx.fillStyle = '#315b35';
+      for (let i = 0; i < 4; i++) { const x = ((i * 73 - scroll * .22) % 330 + 330) % 330 - 30; ctx.fillRect(x, 0, 3, 92 + i * 17); ctx.fillRect(x - 5, 88 + i * 17, 13, 5); }
+      ctx.fillStyle = '#806b45'; ctx.fillRect(((170 - scroll * .18) % 320 + 320) % 320 - 30, 280, 42, 70);
+    } else if (biome === 1) {
+      ctx.fillStyle = '#8e4531'; ctx.fillRect(0, 120, W, 5); ctx.fillRect(28, 90, 8, 230); ctx.fillRect(170, 60, 10, 260);
+      ctx.fillStyle = '#f59b4b';
+      for (let i = 0; i < 9; i++) { const x = (i * 31 + Math.floor(this.time * 17)) % W; const y = 290 - (i * 37 + Math.floor(this.time * 23)) % 180; ctx.fillRect(x, y, 2, 3); }
+    } else if (biome === 2) {
+      ctx.fillStyle = '#080b14';
+      for (let i = 0; i < 8; i++) { const x = ((i * 37 - scroll * .1) % 280 + 280) % 280; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + 11, 48 + (i % 3) * 21); ctx.lineTo(x + 20, 0); ctx.fill(); }
+      ctx.fillStyle = '#819af0';
+      for (let i = 0; i < 7; i++) { const x = (i * 43 + Math.floor(this.time * 9)) % W; const y = 105 + (i * 47) % 180; ctx.fillRect(x, y, 2, 2); }
+    } else if (biome === 3) {
+      ctx.strokeStyle = '#87959b'; ctx.lineWidth = 2;
+      for (let y = 155; y < 305; y += 58) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y - 16); ctx.stroke(); }
+      ctx.fillStyle = '#d5c46e'; ctx.fillRect(((120 - scroll * .35) % 310 + 310) % 310 - 20, 125, 34, 18);
+    } else {
+      ctx.fillStyle = '#9d3c78';
+      for (let i = 0; i < 5; i++) { const x = ((i * 61 - scroll * .14) % 310 + 310) % 310 - 20; ctx.fillRect(x, 75, 22, 65); ctx.fillStyle = '#e1bb55'; ctx.fillRect(x + 4, 82, 14, 4); ctx.fillStyle = '#9d3c78'; }
+      ctx.globalAlpha = .12; ctx.fillStyle = '#fff4c7'; ctx.beginPath(); ctx.moveTo(110, 0); ctx.lineTo(55, GROUND); ctx.lineTo(165, GROUND); ctx.fill(); ctx.globalAlpha = 1;
+    }
+  },
+
+  drawFeature(feature) {
+    if (!feature.on) return;
+    if (feature.type === 'swingVine') {
+      const sway = Math.sin(this.time * 3 + feature.sway) * 5;
+      ctx.strokeStyle = '#79a94d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(feature.x, feature.y); ctx.quadraticCurveTo(feature.x + sway, feature.y + 95, feature.x + 7, feature.y + feature.h); ctx.stroke();
+      ctx.fillStyle = feature.used ? '#a9ce6b' : '#e5c858'; ctx.fillRect(feature.x + 2, feature.y + feature.h - 5, 11, 5);
+    } else if (feature.type === 'grindRail') {
+      ctx.fillStyle = '#c5b86e'; ctx.fillRect(feature.x, feature.y, feature.w, 4);
+      ctx.fillStyle = '#515b64'; for (let x = 8; x < feature.w; x += 24) ctx.fillRect(feature.x + x, feature.y + 4, 3, 18);
+      ctx.fillStyle = '#fff4a5'; for (let x = 4; x < feature.w; x += 18) ctx.fillRect(feature.x + x, feature.y + 1, 4, 1);
+    } else if (feature.type === 'bouncePad') {
+      ctx.fillStyle = '#794d91'; ctx.fillRect(feature.x + 4, feature.y - 3, feature.w - 8, 9);
+      ctx.fillStyle = '#d89aea'; ctx.fillRect(feature.x, feature.y - 5, feature.w, 5);
+      ctx.fillStyle = '#eee8cb'; ctx.fillRect(feature.x + 5, feature.y - 4, 4, 2); ctx.fillRect(feature.x + 16, feature.y - 3, 3, 2);
+    }
   },
 
   drawHazard(hazard) {
@@ -1613,6 +2047,13 @@ const Game = {
       ctx.fillStyle = '#bc4e7c'; ctx.fillRect(hazard.x + 3, hazard.y, 9, 9); ctx.fillStyle = '#55314f'; ctx.fillRect(hazard.x, hazard.y + 9, 15, 18); ctx.fillStyle = '#fff'; ctx.fillRect(hazard.x + 9, hazard.y + 3, 2, 2);
     } else if (hazard.type === 'vine') {
       ctx.fillStyle = '#6d9d47'; ctx.fillRect(hazard.x + 5, hazard.y - 36, 3, 38); ctx.fillStyle = '#bc9a42'; ctx.fillRect(hazard.x, hazard.y, 13, 10);
+    } else if (hazard.type === 'goblin') {
+      ctx.fillStyle = '#668f42'; ctx.fillRect(hazard.x + 3, hazard.y, 11, 9); ctx.fillRect(hazard.x + 1, hazard.y + 2, 3, 3); ctx.fillRect(hazard.x + 13, hazard.y + 2, 3, 3);
+      ctx.fillStyle = '#493629'; ctx.fillRect(hazard.x + 1, hazard.y + 9, 15, 10);
+      ctx.fillStyle = '#ffe16e'; ctx.fillRect(hazard.x + 10, hazard.y + 3, 2, 2);
+    } else if (hazard.type === 'hunterShot') {
+      ctx.fillStyle = '#ff5d9d'; ctx.fillRect(hazard.x, hazard.y, hazard.w, hazard.h);
+      ctx.fillStyle = '#fff4ac'; ctx.fillRect(hazard.x, hazard.y + 1, 6, 2);
     }
     if (hazard.friendly) { ctx.fillStyle = '#9be56d'; ctx.fillRect(hazard.x + hazard.w / 2 - 1, hazard.y - 6, 3, 3); }
     ctx.restore();
@@ -1624,11 +2065,23 @@ const Game = {
       const width = 3 + Math.abs(Math.sin(pickup.spin)) * 3;
       ctx.fillStyle = '#f4d35b'; ctx.fillRect(pickup.x + (6 - width) / 2, pickup.y, width, 8);
       ctx.fillStyle = '#fff0a3'; ctx.fillRect(pickup.x + 2, pickup.y + 2, 2, 4);
-    } else {
+    } else if (pickup.type === 'crawler') {
       ctx.fillStyle = '#7fa5ad'; ctx.fillRect(pickup.x + 3, pickup.y, 7, 7);
       ctx.fillStyle = '#596b78'; ctx.fillRect(pickup.x, pickup.y + 7, 12, 11);
       ctx.fillStyle = '#fff'; ctx.fillRect(pickup.x + 8, pickup.y + 2, 2, 2);
       ctx.fillStyle = '#83e29b'; ctx.fillRect(pickup.x + 3, pickup.y - 7, 6, 4);
+    } else if (pickup.type === 'vehicle') {
+      ctx.fillStyle = '#697983'; ctx.fillRect(pickup.x, pickup.y + 3, 30, 12); ctx.fillStyle = '#b7c3c5'; ctx.fillRect(pickup.x + 3, pickup.y + 4, 23, 3);
+      ctx.fillStyle = '#11151a'; ctx.fillRect(pickup.x + 3, pickup.y + 14, 7, 5); ctx.fillRect(pickup.x + 21, pickup.y + 14, 7, 5);
+      ctx.fillStyle = '#f0d45f'; ctx.fillRect(pickup.x + 12, pickup.y - 4, 7, 5);
+    } else if (pickup.type === 'mote' || pickup.type === 'signal') {
+      const pulse = Math.floor(Math.sin(pickup.spin) * 2);
+      ctx.fillStyle = pickup.type === 'signal' ? '#f1a7ff' : '#8bdfff'; ctx.fillRect(pickup.x - 2 - pulse, pickup.y + 2, pickup.w + 4 + pulse * 2, 3);
+      ctx.fillStyle = '#fff6c5'; ctx.fillRect(pickup.x + 2, pickup.y, 3, pickup.h);
+    } else if (pickup.type === 'coolant') {
+      ctx.fillStyle = '#8fe7ff'; ctx.fillRect(pickup.x + 2, pickup.y, 5, 13); ctx.fillStyle = '#d8fbff'; ctx.fillRect(pickup.x, pickup.y + 2, 9, 3); ctx.fillRect(pickup.x, pickup.y + 9, 9, 3);
+    } else if (pickup.type === 'switch') {
+      ctx.fillStyle = '#d0b35e'; ctx.fillRect(pickup.x + 3, pickup.y, 3, 12); ctx.fillStyle = '#ff6c63'; ctx.fillRect(pickup.x, pickup.y, 9, 5);
     }
   },
 
@@ -1637,10 +2090,37 @@ const Game = {
     ctx.fillStyle = '#090b0f'; ctx.fillRect(52, 70, 136, 12);
     ctx.fillStyle = boss.vulnerable > 0 ? '#ffe36d' : '#b94c4c'; ctx.fillRect(55, 73, 130 * Math.max(0, boss.hp / boss.maxHp), 6);
     ctx.fillStyle = '#fff0a8'; ctx.font = 'bold 6px monospace'; ctx.textAlign = 'center'; ctx.fillText(boss.name, 120, 68); ctx.textAlign = 'left';
-    ctx.fillStyle = floor.bossColor; ctx.fillRect(boss.x + 6, boss.y + 5, boss.w - 12, boss.h - 8);
-    ctx.fillStyle = '#21242b'; ctx.fillRect(boss.x, boss.y + 29, boss.w, 14);
-    ctx.fillStyle = '#0b0d11'; ctx.fillRect(boss.x + 3, boss.y + 39, 9, 6); ctx.fillRect(boss.x + 27, boss.y + 39, 9, 6);
-    ctx.fillStyle = '#fff'; ctx.fillRect(boss.x + 11, boss.y + 11, 4, 4); ctx.fillRect(boss.x + 24, boss.y + 11, 4, 4);
+    if (boss.kind === 0) {
+      ctx.fillStyle = '#313840'; ctx.fillRect(boss.x, boss.y + 19, 39, 24);
+      ctx.fillStyle = '#6e9848'; ctx.fillRect(boss.x + 8, boss.y + 4, 23, 18); ctx.fillRect(boss.x + 3, boss.y + 8, 7, 6); ctx.fillRect(boss.x + 29, boss.y + 8, 7, 6);
+      ctx.fillStyle = '#e4d469'; ctx.fillRect(boss.x + 13, boss.y + 10, 4, 3); ctx.fillRect(boss.x + 24, boss.y + 10, 4, 3);
+      ctx.fillStyle = '#171b20'; for (let x = 2; x < 37; x += 8) ctx.fillRect(boss.x + x, boss.y + 38, 6, 7);
+      ctx.fillStyle = boss.mode === 'telegraph' ? '#ff5f57' : '#d6b44f'; ctx.fillRect(boss.x - 8, boss.y + 27, 10, 7);
+    } else if (boss.kind === 1) {
+      ctx.fillStyle = '#552523'; ctx.fillRect(boss.x + 2, boss.y + 5, 35, 38);
+      ctx.fillStyle = '#e16d3c'; ctx.fillRect(boss.x + 8, boss.y + 11, 23, 25);
+      ctx.fillStyle = '#ffd35c'; ctx.fillRect(boss.x + 13, boss.y + 17, 13, 14);
+      ctx.fillStyle = '#25252b'; ctx.fillRect(boss.x - 5, boss.y + 2, 9, 41); ctx.fillRect(boss.x + 35, boss.y + 2, 9, 41);
+      ctx.fillStyle = '#8fe7ff'; for (let i = 0; i < Math.max(0, boss.maxHp - boss.hp); i++) ctx.fillRect(boss.x + 9 + i * 6, boss.y + 7, 4, 4);
+    } else if (boss.kind === 2) {
+      ctx.fillStyle = '#161426'; ctx.fillRect(boss.x + 9, boss.y + 9, 22, 34);
+      ctx.fillStyle = '#7864a5'; ctx.fillRect(boss.x - 5, boss.y + 5, 17, 22); ctx.fillRect(boss.x + 28, boss.y + 5, 17, 22);
+      ctx.fillStyle = '#b49be8'; ctx.fillRect(boss.x + 12, boss.y + 3, 16, 13);
+      ctx.fillStyle = '#f19fff'; ctx.fillRect(boss.x + 15, boss.y + 8, 3, 3); ctx.fillRect(boss.x + 23, boss.y + 8, 3, 3);
+      ctx.fillStyle = '#879cf0'; for (let i = 0; i < this.bossObjective; i++) ctx.fillRect(boss.x + 9 + i * 6, boss.y - 4, 3, 3);
+    } else if (boss.kind === 3) {
+      ctx.fillStyle = '#49565b'; ctx.fillRect(boss.x - 3, boss.y + 9, 45, 31);
+      ctx.fillStyle = '#bba969'; ctx.fillRect(boss.x + 4, boss.y + 2, 31, 15);
+      ctx.fillStyle = '#192025'; ctx.fillRect(boss.x + 9, boss.y + 7, 7, 5); ctx.fillRect(boss.x + 25, boss.y + 7, 7, 5);
+      ctx.fillStyle = '#0c1013'; ctx.fillRect(boss.x, boss.y + 37, 12, 8); ctx.fillRect(boss.x + 28, boss.y + 37, 12, 8);
+      ctx.fillStyle = '#ffcf55'; ctx.fillRect(boss.x - 9, boss.y + 22, 9, 4);
+    } else {
+      ctx.fillStyle = '#4b2945'; ctx.fillRect(boss.x + 6, boss.y + 11, 27, 32);
+      ctx.fillStyle = '#c64d83'; ctx.fillRect(boss.x + 9, boss.y + 2, 21, 15);
+      ctx.fillStyle = '#f4e3d7'; ctx.fillRect(boss.x + 13, boss.y + 7, 4, 3); ctx.fillRect(boss.x + 24, boss.y + 7, 4, 3);
+      ctx.fillStyle = '#22242c'; ctx.fillRect(boss.x - 13, boss.y + 18, 23, 5); ctx.fillRect(boss.x - 15, boss.y + 16, 6, 9);
+      ctx.fillStyle = '#ff5d9d'; ctx.fillRect(boss.x - 16, boss.y + 19, 3, 3);
+    }
     if (boss.vulnerable > 0) { ctx.fillStyle = '#ffe36d'; ctx.fillRect(boss.x + 17, boss.y - 6, 6, 4); }
   },
 
@@ -1692,7 +2172,6 @@ const Input = {
       this.x = event.clientX;
       this.y = event.clientY;
       this.at = performance.now();
-      Game.player.jump();
     });
     canvas.addEventListener('pointerup', event => {
       if (!['RUNNING', 'BOSS'].includes(Game.state)) return;
@@ -1700,6 +2179,7 @@ const Input = {
       const dy = event.clientY - this.y;
       if (dy > 28 && Math.abs(dy) > Math.abs(dx)) Game.player.dive();
       else if (dy < -28 && Math.abs(dy) > Math.abs(dx)) Game.player.dash();
+      else Game.player.jump();
     });
     addEventListener('keydown', event => {
       if (event.code === 'Space') { event.preventDefault(); Audio.init(); Game.player.jump(); }

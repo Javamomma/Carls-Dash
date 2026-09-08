@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.1.0
+
+- Replaced random room waves with fifteen named, scripted traversal set-pieces.
+- Added catchable swing vines, grind rails, bounce pads, minecart transformations, signal motes, and goblin mobs.
+- Added visible room-objective progress, objective rewards, and five measurable viewer tiers.
+- Limited sponsors to one offer per floor and made every immediate effect, penalty, and duration explicit in the offer and HUD.
+- Rebuilt all five boss encounters around separate mechanics; Floors 1 and 2 now use a telegraphed dozer ram/stun cycle and collectible coolant-valve battle.
+- Added distinct biome scenery for ruins, foundry, burrows, transit, and hunting gardens.
+- Redesigned Carl's procedural sprite with a stronger silhouette, subtler face, gear, gloves, and separated Donut sprite.
+
 ## 2.0.0
 
 - Rebuilt the game around discrete dungeon rooms and meaningful doorway choices.
