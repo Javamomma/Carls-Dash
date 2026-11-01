@@ -165,3 +165,96 @@ test('the frame loop survives the cart', () => {
   }
   assert.ok(game.time > before + 1, 'game time should keep advancing while riding');
 });
+
+// --- pause safety -----------------------------------------------------------
+
+// A fresh run standing in a boss fight, with the frame loop primed.
+function bossFight(seed = 7, floor = 1) {
+  const loaded = loadGame({ seed });
+  loaded.game.floor = floor;
+  loaded.game.startBoss();
+  return loaded;
+}
+
+// Wall-clock and frames together, so both window timers and the game loop get a chance to run.
+function runFor(clock, ms) {
+  for (let t = 0; t < ms; t += 1000 / 60) clock.frame();
+}
+
+test('pausing across the boss exit still opens the safe room', () => {
+  const { game, clock } = bossFight();
+  game.hitBoss(game.boss.hp, true);
+  assert.equal(game.boss.defeated, true);
+  runFor(clock, 300);
+  game.pause();
+  assert.equal(game.state, 'PAUSED');
+  runFor(clock, 3000);
+  assert.equal(game.state, 'PAUSED');
+  game.resume();
+  runFor(clock, 2000);
+  assert.equal(game.state, 'SAFE');
+});
+
+test('a stale boss exit from an earlier boss or run does nothing', () => {
+  // A new boss on the next floor must keep fighting.
+  const a = bossFight();
+  a.game.hitBoss(a.game.boss.hp, true);
+  runFor(a.clock, 300);
+  a.game.floor = 2;
+  a.game.startBoss();
+  runFor(a.clock, 3000);
+  assert.equal(a.game.state, 'BOSS');
+  assert.equal(a.game.boss.defeated, false);
+
+  // A fresh run must not be dragged to the old boss's safe room.
+  const b = bossFight();
+  b.game.hitBoss(b.game.boss.hp, true);
+  runFor(b.clock, 300);
+  b.game.start(false);
+  runFor(b.clock, 3000);
+  assert.notEqual(b.game.state, 'SAFE');
+  assert.equal(b.game.state, 'RUNNING');
+});
+
+function pauseSnapshot(game) {
+  const p = game.player;
+  return JSON.stringify({
+    state: game.state, viewers: game.viewers, boxes: game.boxes, inventory: game.inventory,
+    y: p.y, vy: p.vy, jumps: p.jumps, airborne: p.airborne, dashCooldown: p.dashCooldown, slideTime: p.slideTime,
+    donutCooldown: game.donutCooldown, roomStats: game.roomStats, hp: game.hp, invincible: p.invincible,
+    items: game.inventory.map(item => [item.id, item.charges]),
+  });
+}
+
+test('keyboard input while paused changes nothing', () => {
+  const { game, clock, fire } = loadGame({ seed: 7 });
+  game.roomEvents = [];
+  game.roomDuration = 1e9;
+  game.hazards = [];
+  game.features = [];
+  game.pickups = [];
+  // Usable items and a ready Donut, so a leaked 1-3 or D press would visibly change something.
+  game.takeLoot('medkit');
+  game.takeLoot('shield');
+  game.takeLoot('magnet');
+  game.hp = 2;
+  game.donutCooldown = 0;
+  game.pause();
+  assert.equal(game.state, 'PAUSED');
+  assert.equal(game.inventory.length, 3);
+  const before = pauseSnapshot(game);
+  const keys = [
+    { code: 'Space', key: ' ' }, { code: 'ArrowUp', key: 'ArrowUp' }, { code: 'ArrowDown', key: 'ArrowDown' },
+    { code: 'ArrowDown', key: 'ArrowDown' }, { code: 'ArrowDown', key: 'ArrowDown' },
+    { code: 'KeyD', key: 'd' }, { code: 'Digit1', key: '1' }, { code: 'Digit2', key: '2' }, { code: 'Digit3', key: '3' },
+    { code: 'ArrowLeft', key: 'ArrowLeft' }, { code: 'ArrowRight', key: 'ArrowRight' },
+  ];
+  for (const key of keys) {
+    fire('window', 'keydown', key);
+    clock.frame();
+  }
+  runFor(clock, 500);
+  assert.equal(pauseSnapshot(game), before);
+  fire('window', 'keydown', { code: 'Escape', key: 'Escape' });
+  assert.equal(game.state, 'RUNNING');
+});

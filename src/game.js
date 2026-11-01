@@ -1134,6 +1134,11 @@ const Game = {
 
   updateBoss(dt) {
     const boss = this.boss;
+    if (boss?.defeated && boss.exitTimer > 0) {
+      boss.exitTimer -= dt;
+      if (boss.exitTimer <= 0) this.showSafeRoom('floor');
+      return;
+    }
     if (!boss || boss.defeated) return;
     boss.timer -= dt;
     boss.modeTimer -= dt;
@@ -1222,9 +1227,8 @@ const Game = {
     if (this.bossNoHit) this.unlockAchievement('bossClean');
     Audio.achievement();
     this.say('ANNOUNCER', `${this.boss.name} has been reassigned to post-production.`);
-    window.setTimeout(() => {
-      if (this.state === 'BOSS') this.showSafeRoom('floor');
-    }, 1500);
+    // Counted on the game clock (see updateBoss) so pausing can't strand or skip the exit.
+    this.boss.exitTimer = 1.5;
   },
 
   advanceFloor() {
@@ -1864,9 +1868,10 @@ const Input = {
       else Game.player.jump();
     });
     addEventListener('keydown', event => {
-      if (event.code === 'Space') { event.preventDefault(); Audio.init(); Game.player.jump(); }
-      if (event.code === 'ArrowDown') { event.preventDefault(); Game.player.dive(); }
-      if (event.code === 'ArrowUp') { event.preventDefault(); Game.player.dash(); }
+      const playing = ['RUNNING', 'BOSS'].includes(Game.state);
+      if (event.code === 'Space') { event.preventDefault(); if (playing) { Audio.init(); Game.player.jump(); } }
+      if (event.code === 'ArrowDown') { event.preventDefault(); if (playing) Game.player.dive(); }
+      if (event.code === 'ArrowUp') { event.preventDefault(); if (playing) Game.player.dash(); }
       if (event.code === 'ArrowLeft' && Game.state === 'CHOICE') Game.chooseDoor(0);
       if (event.code === 'ArrowRight' && Game.state === 'CHOICE') Game.chooseDoor(1);
       if (event.key.toLowerCase() === 'd') Game.useDonut();
