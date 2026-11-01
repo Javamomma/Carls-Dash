@@ -536,7 +536,7 @@ const Game = {
       slowTime: 0, greaseReady: false, trapArmed: false, greaseKills: 0,
       sponsorModifier: null, sponsorOfferedFloor: 0, challengesCompleted: 0,
       blueprintHistory: [],
-      daily, shake: 0, flash: 0, currentRoute: ROUTES[0], afterSafe: 'door',
+      diveActive: false, daily, shake: 0, flash: 0, currentRoute: ROUTES[0], afterSafe: 'door',
       achievementShowing: false,
     });
     $('achievement').classList.remove('on');
@@ -956,8 +956,9 @@ const Game = {
     this.state = 'CHOICE';
     this.showOverlay('doorChoice');
     const pool = RNG.shuffle(ROUTES);
-    let choices = pool.slice(0, 2);
-    if (choices[0].id === choices[1].id) choices[1] = ROUTES[(ROUTES.indexOf(choices[0]) + 1) % ROUTES.length];
+    // Copies, so Donut's scouting edits the door and never the shared ROUTES table.
+    let choices = pool.slice(0, 2).map(route => ({ ...route }));
+    if (choices[0].id === choices[1].id) choices[1] = { ...ROUTES[(ROUTES.findIndex(route => route.id === choices[0].id) + 1) % ROUTES.length] };
     this.doorChoices = choices;
     $('donutAdvice').textContent = RNG.pick(DONUT_LINES.door);
     $('doors').innerHTML = choices.map((route, index) => `
@@ -1900,7 +1901,7 @@ $('pauseBtn').onclick = event => { event.stopPropagation(); Game.pause(); };
 $('resumeBtn').onclick = () => Game.resume();
 $('restartBtn').onclick = () => Game.start(Game.daily);
 $('quitBtn').onclick = () => Game.quit();
-$('retryBtn').onclick = () => Game.start(false);
+$('retryBtn').onclick = () => Game.start(Game.daily);
 $('overTitleBtn').onclick = () => Game.showTitle();
 $('healBtn').onclick = () => Game.safeHeal();
 $('leaveSafeBtn').onclick = () => Game.leaveSafeRoom();

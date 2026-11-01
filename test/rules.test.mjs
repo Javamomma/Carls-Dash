@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import vm from 'node:vm';
 import { loadGame } from './fixture.mjs';
 
 const DT = 1 / 60;
@@ -257,4 +258,63 @@ test('keyboard input while paused changes nothing', () => {
   assert.equal(pauseSnapshot(game), before);
   fire('window', 'keydown', { code: 'Escape', key: 'Escape' });
   assert.equal(game.state, 'RUNNING');
+});
+
+test('Scout, then restart: the route table is unchanged', () => {
+  const { game, elements, sandbox } = loadGame({ seed: 11 });
+  const routes = () => vm.runInContext('ROUTES', sandbox);
+  const snapshot = JSON.parse(JSON.stringify(routes()));
+  let mysteryIndex = -1;
+  for (let tries = 0; tries < 200 && mysteryIndex < 0; tries++) {
+    game.showDoors();
+    mysteryIndex = game.doorChoices.findIndex(route => route.id === 'mystery');
+  }
+  assert.ok(mysteryIndex >= 0, 'a mystery door should come up within 200 rolls');
+  game.donutMode = 'SCOUT';
+  game.donutCooldown = 0;
+  elements.get('scoutDoorBtn').onclick();
+  assert.match(game.doorChoices[mysteryIndex].title, /^SCOUTED: /, 'the visible door should be revealed');
+  game.start(false);
+  assert.deepEqual(JSON.parse(JSON.stringify(routes())), snapshot);
+  assert.ok(routes().some(route => route.id === 'mystery'));
+});
+
+test('Retry after a daily stays daily, and after a normal run stays normal', () => {
+  for (const daily of [true, false]) {
+    const { game, elements } = loadGame({ seed: 5, start: false });
+    game.start(daily);
+    const seed = game.seed;
+    game.roomEvents = [];
+    game.roomDuration = 1e9;
+    game.hazards = [];
+    game.player.invincible = 0;
+    game.hp = 1;
+    placeOnCarl(game, 'snake');
+    step(game, 3);
+    assert.equal(game.state, 'GAMEOVER');
+    elements.get('retryBtn').onclick();
+    assert.equal(game.daily, daily);
+    assert.equal(game.state, 'RUNNING');
+    if (daily) assert.equal(game.seed, seed, 'a daily retry should use the daily seed');
+  }
+});
+
+test('restarting mid-dive does not slam on the new run\'s first landing', () => {
+  const game = quietRoom(3);
+  game.player.jump();
+  step(game, 5);
+  game.player.dive();
+  assert.equal(game.diveActive, true);
+  game.start(false);
+  game.roomEvents = [];
+  game.roomDuration = 1e9;
+  game.hazards = [];
+  game.features = [];
+  game.pickups = [];
+  let slams = 0;
+  game.groundSlam = () => { slams += 1; };
+  game.player.jump();
+  step(game, 120);
+  assert.equal(game.player.airborne, false, 'Carl should have landed');
+  assert.equal(slams, 0);
 });
