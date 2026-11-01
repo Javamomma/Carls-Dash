@@ -1,5 +1,9 @@
 # Plan: make v2.1 playable again (danger, minecart, pause)
 
+Status 2026-10-31: T1–T8 merged into `main` (local, not pushed). 26 of the new scenarios fail on
+323b775 and all 33 tests pass now; the browser smoke check fails on 323b775's build and passes now.
+The GitHub Actions run happens once the branch is pushed.
+
 Source: audit `~/audits/reports/Carls-Dash/2026-10-31.md` and its dev-team task file. Base: `main`
 (v2.1.0, 323b775). One builder at a time. Every fix lands with a test that failed before it.
 
@@ -62,4 +66,11 @@ Proof rule: the new rules tests load `src/game.js` by default, but the env var
 - Escape `offer.title/now/next` and the icon fields with `escapeHtml`.
 
 ## Hand checks for Arshia (phone)
-Listed in the final summary once T1–T7 land.
+1. Floor 1: a log or goblin costs a heart.
+2. Floor 1 feels fair for a newcomer: four rooms, then the Goblin Dozer (jump its ram, land on it).
+3. Floor 2 cart room (SLAG CART SMASH; take Mob Den, Sponsor Vault or Unmarked door): Carl sits in
+   the cart, smashes barriers, and the game keeps running.
+4. Beat a boss, pause straight away, wait, resume: the safe room opens.
+5. Daily Dungeon, lose, Retry: the same daily course starts again.
+6. Safe room: with a box open, other boxes and the exit wait; a fourth item asks which slot to replace.
+7. Furnace Foreman: the crusher now comes a beat after the flame (jump, land, swipe down).
