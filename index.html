@@ -1057,8 +1057,9 @@ const Game = {
     }
   },
 
-  spawnHazard(type, x) {
-    const base = { type, x, on: true, passed: false, friendly: false, age: 0, vx: 0 };
+  spawnHazard(type, x, overrides = {}) {
+    // telegraph defaults to 0 here so every hazard has a numeric warning time the collision gate can read.
+    const base = { type, x, on: true, passed: false, friendly: false, age: 0, vx: 0, telegraph: 0 };
     const shapes = {
       log: { y: GROUND - 13, w: 25, h: 13 }, snake: { y: GROUND - 8, w: 18, h: 8 },
       pit: { y: GROUND - 3, w: 31, h: 7 }, branch: { y: GROUND - 30, w: 28, h: 14 },
@@ -1068,7 +1069,9 @@ const Game = {
       vine: { y: GROUND - 12, w: 13, h: 12 }, goblin: { y: GROUND - 19, w: 17, h: 19 },
       hunterShot: { y: GROUND - 40, w: 20, h: 5 },
     };
-    this.hazards.push({ ...base, ...(shapes[type] || shapes.log) });
+    const hazard = { ...base, ...(shapes[type] || shapes.log), ...overrides };
+    this.hazards.push(hazard);
+    return hazard;
   },
 
   updateHazards(dt) {
@@ -1494,8 +1497,7 @@ const Game = {
         boss.timer = 4.3;
         this.say('SYSTEM', `TRACK SWITCH ${this.bossObjective + 1}/4 · CART CONTROL RECOMMENDED.`);
       } else {
-        const shot = { type: 'hunterShot', x: W + 5, y: Math.max(150, this.player.y + 10), w: 24, h: 5, on: true, passed: false, friendly: false, age: 0, vx: 0 };
-        this.hazards.push(shot);
+        this.spawnHazard('hunterShot', W + 5, { y: Math.max(150, this.player.y + 10), w: 24, h: 5 });
         boss.vulnerable = 1.25;
         boss.timer = 3.5;
         this.say('SYSTEM', 'HUNTER RELOADING · CLOSE THE DISTANCE!');
