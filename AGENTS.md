@@ -42,6 +42,9 @@ npm test && git diff --exit-code -- index.html && python3.14 test/browser_smoke.
 
 Run only one browser check at a time: other agents share this machine.
 
+Balance changes: measure with `npm run playtest -- --runs 200` before and after (scripted
+players on fixed seeds; `--hotspots` shows where they get hurt) and put both tables in the commit.
+
 ## Conventions
 - Comments: one sentence saying *why*. Don't narrate task history; git keeps it.
 - Gameplay randomness goes through `RNG` (seeded). Particles may use `Math.random`.
