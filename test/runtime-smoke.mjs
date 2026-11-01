@@ -88,7 +88,7 @@ assert.equal(game.state, 'RUNNING');
 assert.equal(game.floor, 1);
 assert.equal(game.inventory.length, 0);
 assert.ok(game.blueprint?.name, 'a room should select an authored blueprint');
-assert.ok(game.roomEvents.length >= 9, 'a blueprint should contain a substantial event sequence');
+assert.ok(game.roomEvents.length >= 8, 'a blueprint should contain a substantial event sequence');
 game.update(1 / 60);
 game.draw();
 

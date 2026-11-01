@@ -453,22 +453,22 @@ const ROOM_BLUEPRINTS = [
   {
     id: 'canopy-swing', floor: 1, affinity: ['stunt', 'mystery'], name: 'CANOPY SWING', duration: 12.4,
     challenge: { kind: 'swing', target: 2, label: 'Catch 2 swing vines' },
-    events: [[.8, 'coins', 'low', 5], [1.7, 'vine'], [2.7, 'pit'], [3.7, 'coins', 'high', 7], [5.1, 'branch'], [6, 'vine'], [7, 'pit'], [8.2, 'goblin'], [9.3, 'coins', 'arc', 7], [10.1, 'log']],
+    events: [[.8, 'coins', 'low', 5], [1.7, 'vine'], [2.7, 'pit'], [3.7, 'coins', 'high', 7], [5.1, 'branch'], [6, 'vine'], [8.2, 'goblin'], [9.3, 'coins', 'arc', 7], [10.1, 'log']],
   },
   {
     id: 'goblin-market', floor: 1, affinity: ['mob', 'rescue'], name: 'GOBLIN MARKET CRASH', duration: 12.2,
     challenge: { kind: 'stomp', target: 3, label: 'Stomp 3 dungeon mobs' },
-    events: [[.9, 'goblin'], [1.8, 'coins', 'arc', 5], [3, 'snake'], [4, 'goblin'], [5.4, 'bounce'], [6.3, 'goblin'], [7.4, 'pit'], [8.4, 'goblin'], [9.4, 'coins', 'high', 6], [10.1, 'branch']],
+    events: [[.9, 'goblin'], [1.8, 'coins', 'arc', 5], [4, 'goblin'], [5.4, 'bounce'], [6.3, 'goblin'], [7.4, 'pit'], [8.4, 'goblin'], [9.4, 'coins', 'high', 6], [10.1, 'branch']],
   },
   {
     id: 'ruin-rails', floor: 1, affinity: ['supply', 'vault'], name: 'RUIN RAIL RELAY', duration: 12.5,
     challenge: { kind: 'grind', target: 3, label: 'Grind 3 rail sections' },
-    events: [[.8, 'rail'], [1.2, 'coins', 'high', 8], [3, 'pit'], [4, 'rail'], [4.4, 'coins', 'high', 7], [6.4, 'branch'], [7.2, 'rail'], [8.1, 'coins', 'high', 6], [9.4, 'log'], [10.2, 'pit']],
+    events: [[.8, 'rail'], [1.2, 'coins', 'high', 8], [3, 'pit'], [4, 'rail'], [4.4, 'coins', 'high', 7], [7.2, 'rail'], [8.1, 'coins', 'high', 6], [9.4, 'log']],
   },
   {
     id: 'foundry-pulse', floor: 2, affinity: ['supply', 'stunt', 'rescue'], name: 'FOUNDRY PULSE', duration: 12.5,
     challenge: { kind: 'near', target: 3, label: 'Thread 3 danger-close gaps' },
-    events: [[.8, 'flame'], [1.8, 'coins', 'arc', 6], [2.9, 'crusher'], [4.1, 'flame'], [5, 'bounce'], [5.9, 'crusher'], [7, 'coins', 'high', 7], [8.2, 'flame'], [9.2, 'pit'], [10.1, 'crusher']],
+    events: [[.8, 'flame'], [1.8, 'coins', 'arc', 6], [2.9, 'crusher'], [4.1, 'flame'], [5, 'bounce'], [6.6, 'crusher'], [7, 'coins', 'high', 7], [8.2, 'flame'], [9.2, 'pit'], [10.1, 'crusher']],
   },
   {
     id: 'slag-cart', floor: 2, affinity: ['mob', 'vault', 'mystery'], name: 'SLAG CART SMASH', duration: 12.6,
@@ -478,7 +478,7 @@ const ROOM_BLUEPRINTS = [
   {
     id: 'coolant-conduit', floor: 2, affinity: ['supply', 'rescue', 'mystery'], name: 'COOLANT CONDUIT', duration: 12.7,
     challenge: { kind: 'grind', target: 2, label: 'Grind 2 pipe rails' },
-    events: [[.7, 'rail'], [1.2, 'coins', 'high', 7], [2.9, 'flame'], [4.1, 'bounce'], [5, 'crusher'], [6.1, 'rail'], [6.7, 'coins', 'high', 8], [8.5, 'flame'], [9.5, 'pit'], [10.4, 'log']],
+    events: [[.7, 'rail'], [1.2, 'coins', 'high', 7], [2.9, 'flame'], [4.1, 'bounce'], [5.6, 'crusher'], [6.1, 'rail'], [6.7, 'coins', 'high', 8], [8.5, 'flame'], [9.5, 'pit'], [10.4, 'log']],
   },
   {
     id: 'blackout-motes', floor: 3, affinity: ['supply', 'rescue', 'mystery'], name: 'BLACKOUT MOTE RUN', duration: 12.8,
@@ -1138,7 +1138,7 @@ const Game = {
         const activeMove = this.player.airborne || this.player.slideTime > 0 || this.player.dashTime > 0;
         if (activeMove) this.nearMiss(hazard);
       }
-      if (hazard.x < -60 || hazard.x > W + 100) hazard.on = false;
+      if (hazard.x < -60 || (hazard.friendly && hazard.x > W + 100)) hazard.on = false;
     }
     this.hazards = this.hazards.filter(item => item.on);
   },
@@ -1543,7 +1543,7 @@ const Game = {
       this.bossWave += 1;
       if (boss.kind === 1) {
         this.spawnHazard('flame', W + 8);
-        this.spawnHazard('crusher', W + 78);
+        this.spawnHazard('crusher', W + 150);
         const high = this.bossWave % 2;
         this.pickups.push({ type: 'coolant', x: W + 48, y: high ? GROUND - 88 : GROUND - 22, w: 9, h: 13, on: true, spin: 0 });
         boss.timer = 4.4;
@@ -1759,7 +1759,7 @@ const Game = {
     this.roomStats.damage += 1;
     this.bossNoHit = false;
     this.combo = 0;
-    this.player.invincible = 1.35;
+    this.player.invincible = 2;
     this.player.vy = -230;
     this.player.airborne = true;
     this.shake = .85;

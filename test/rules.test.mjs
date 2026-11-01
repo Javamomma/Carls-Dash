@@ -399,3 +399,24 @@ test('a fourth item asks before replacing', () => {
   assert.doesNotMatch(game.elements.get('lootChoices').innerHTML, /REPLACE/);
   assert.equal(game.inventory.length, 3);
 });
+
+// --- boss waves --------------------------------------------------------------
+
+test('Furnace Foreman waves keep their crusher, which arrives after the flame', () => {
+  const { game } = bossFight(7, 2);
+  assert.equal(game.boss.kind, 1);
+  game.boss.timer = 0;
+  game.update(DT);
+  const flame = game.hazards.find(h => h.type === 'flame');
+  const crusher = game.hazards.find(h => h.type === 'crusher');
+  assert.ok(flame && crusher, 'a wave spawns a flame and a crusher');
+  assert.ok(crusher.x > flame.x, 'the crusher trails the flame');
+  let visible = false;
+  for (let i = 0; i < 600 && !visible; i++) {
+    game.boss.timer = 99; // hold further waves back
+    game.update(DT);
+    assert.ok(game.hazards.includes(crusher), 'the crusher is not culled off the right edge');
+    visible = crusher.x < 240;
+  }
+  assert.ok(visible, 'the crusher reaches the visible screen');
+});
