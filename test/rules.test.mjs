@@ -235,9 +235,10 @@ test('keyboard input while paused changes nothing', () => {
   game.features = [];
   game.pickups = [];
   // Usable items and a ready Donut, so a leaked 1-3 or D press would visibly change something.
-  game.takeLoot('medkit');
-  game.takeLoot('shield');
-  game.takeLoot('magnet');
+  for (const id of ['medkit', 'shield', 'magnet']) {
+    game.pendingLoot = { options: [id], replacing: null };
+    game.takeLoot(id);
+  }
   game.hp = 2;
   game.donutCooldown = 0;
   game.pause();
@@ -317,4 +318,84 @@ test('restarting mid-dive does not slam on the new run\'s first landing', () => 
   step(game, 120);
   assert.equal(game.player.airborne, false, 'Carl should have landed');
   assert.equal(slams, 0);
+});
+
+// --- loot choices ----------------------------------------------------------
+const ALL_ITEMS = ['bomb', 'grease', 'shield', 'medkit', 'magnet', 'trap', 'spring', 'flare', 'remote', 'fanclub'];
+const plain = value => JSON.parse(JSON.stringify(value));
+const held = id => ({ id, name: `HELD ${id.toUpperCase()}`, icon: '*', description: '', charges: 1 });
+const offered = game => [...game.elements.get('lootChoices').innerHTML.matchAll(/data-loot="([^"]+)"/g)].map(m => m[1]);
+
+function safeRoomWith(boxes) {
+  const { game, elements } = loadGame({ seed: 11 });
+  game.showSafeRoom('door');
+  game.boxes = [...boxes];
+  game.inventory = [];
+  game.renderSafeRoom();
+  return Object.assign(game, { elements });
+}
+
+test('opening a second box waits for the first choice', () => {
+  for (const resolve of ['take', 'discard']) {
+    const game = safeRoomWith(['bronze', 'bronze']);
+    game.openBox('bronze');
+    const options = offered(game);
+    assert.equal(options.length, 3);
+    assert.equal(game.boxes.length, 1);
+    assert.match(game.elements.get('lootChoices').innerHTML, /DISCARD/);
+    assert.match(game.elements.get('boxes').innerHTML, /disabled/);
+    assert.equal(game.elements.get('leaveSafeBtn').disabled, true);
+
+    game.openBox('bronze');
+    assert.equal(game.boxes.length, 1, 'second box stays closed');
+    assert.deepEqual(offered(game), options, 'pending options unchanged');
+    game.leaveSafeRoom();
+    assert.equal(game.state, 'SAFE', 'cannot leave with a pending choice');
+
+    if (resolve === 'take') game.takeLoot(options[0]); else game.discardLoot();
+    assert.equal(game.elements.get('leaveSafeBtn').disabled, false);
+    assert.doesNotMatch(game.elements.get('boxes').innerHTML, /disabled/);
+    game.openBox('bronze');
+    assert.equal(game.boxes.length, 0, `next box opens after ${resolve}`);
+    assert.equal(offered(game).length, 3);
+  }
+});
+
+test('a fourth item asks before replacing', () => {
+  const game = safeRoomWith(['gold', 'gold', 'gold', 'gold']);
+  game.openBox('gold');
+  const options = offered(game);
+  const fillers = ALL_ITEMS.filter(id => !options.includes(id)).slice(0, 3);
+  const setHeld = () => { game.inventory = fillers.map(held); };
+  setHeld();
+  const before = plain(game.inventory);
+
+  game.takeLoot(options[0]);
+  assert.deepEqual(plain(game.inventory), before, 'nothing dropped yet');
+  const html = game.elements.get('lootChoices').innerHTML;
+  assert.equal([...html.matchAll(/REPLACE /g)].length, 3);
+  for (const id of fillers) assert.ok(html.includes(`REPLACE HELD ${id.toUpperCase()}`));
+  assert.match(html, /DISCARD NEW/);
+  game.openBox('gold');
+  assert.equal(game.boxes.length, 3, 'still pending: no other box opens');
+
+  game.replaceItem(1);
+  assert.deepEqual(plain(game.inventory.map(i => i.id)), [fillers[0], options[0], fillers[2]]);
+  assert.equal(game.inventory[1].charges, 1);
+  assert.equal(game.elements.get('lootChoices').classList.contains('hidden'), true);
+
+  game.openBox('gold');
+  setHeld();
+  game.takeLoot(offered(game).find(id => !fillers.includes(id)));
+  game.discardLoot();
+  assert.deepEqual(plain(game.inventory.map(i => i.id)), fillers, 'discard new keeps all three');
+  assert.equal(game.elements.get('leaveSafeBtn').disabled, false);
+
+  game.openBox('gold');
+  const again = offered(game);
+  game.inventory = [again[0], fillers[1], fillers[2]].map(held);
+  game.takeLoot(again[0]);
+  assert.equal(game.inventory[0].charges, 2, 'held item just gains charges');
+  assert.doesNotMatch(game.elements.get('lootChoices').innerHTML, /REPLACE/);
+  assert.equal(game.inventory.length, 3);
 });

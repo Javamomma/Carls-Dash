@@ -515,6 +515,7 @@ const Game = {
   particles: [],
   inventory: [],
   boxes: [],
+  pendingLoot: null,
   runAchievements: new Set(),
   achievementQueue: [],
   player: null,
@@ -529,7 +530,7 @@ const Game = {
     Object.assign(this, {
       state: 'RUNNING', time: 0, floor: 1, roomsOnFloor: 0, roomsTotal: 0,
       viewers: 0, displayViewers: 0, hp: 4, maxHp: 4, speed: 122,
-      hazards: [], features: [], pickups: [], particles: [], inventory: [], boxes: [],
+      hazards: [], features: [], pickups: [], particles: [], inventory: [], boxes: [], pendingLoot: null,
       runAchievements: new Set(), achievementQueue: [], viewerMilestones: new Set(), classId: null,
       donutMode: 'ZAP', donutCooldown: 0, nearMisses: 0, combo: 0, comboTimer: 0,
       teamwork: 0, teamBoost: 0, allyShield: 0, magnetTime: 0, scoutTime: 0,
@@ -988,8 +989,8 @@ const Game = {
     this.healUsed = false;
     this.showOverlay('safeRoom');
     $('safeDialogue').textContent = RNG.pick(DONUT_LINES.safe);
-    $('lootChoices').classList.add('hidden');
-    $('lootChoices').innerHTML = '';
+    this.pendingLoot = null;
+    this.renderLootChoices();
     this.renderSafeRoom();
   },
 
@@ -998,7 +999,7 @@ const Game = {
     this.boxes.forEach(tier => { counts[tier] += 1; });
     $('boxes').innerHTML = this.boxes.length
       ? ['bronze', 'silver', 'gold'].filter(tier => counts[tier]).map(tier =>
-        `<button class="box-button ${tier}" data-box="${tier}">${tier.toUpperCase()} BOX ×${counts[tier]}</button>`).join('')
+        `<button class="box-button ${tier}" data-box="${tier}"${this.pendingLoot ? ' disabled' : ''}>${tier.toUpperCase()} BOX ×${counts[tier]}</button>`).join('')
       : '<p>No boxes. The System is withholding affection.</p>';
     document.querySelectorAll('[data-box]').forEach(button => {
       button.onclick = () => this.openBox(button.dataset.box);
@@ -1008,10 +1009,12 @@ const Game = {
       : '<p>Inventory empty. Carl has pockets but no dignity.</p>';
     $('healBtn').disabled = this.healUsed || this.hp >= this.maxHp || this.viewers < 100;
     $('healBtn').textContent = this.hp >= this.maxHp ? 'FULL HEALTH' : 'PATCH UP · 100 VIEWERS';
+    $('leaveSafeBtn').disabled = Boolean(this.pendingLoot);
     $('leaveSafeBtn').textContent = this.afterSafe === 'floor' ? 'DESCEND A FLOOR' : this.afterSafe === 'boss' ? 'FACE THE BOSS' : 'BACK TO THE DUNGEON';
   },
 
   openBox(tier) {
+    if (this.pendingLoot) return;
     const index = this.boxes.indexOf(tier);
     if (index < 0) return;
     this.boxes.splice(index, 1);
@@ -1019,37 +1022,85 @@ const Game = {
     const rarityMax = tier === 'gold' ? 3 : tier === 'silver' ? 2 : 1;
     let pool = Object.entries(ITEMS).filter(([, item]) => item.rarity <= rarityMax);
     if (tier === 'gold') pool = Object.entries(ITEMS).filter(([, item]) => item.rarity >= 2);
-    const options = RNG.shuffle(pool).slice(0, 3);
-    $('lootChoices').classList.remove('hidden');
-    $('lootChoices').innerHTML = options.map(([id, item]) => `
-      <button class="loot-card" data-loot="${id}">
-        <b>${escapeHtml(item.name)}</b><span>${item.icon}</span><small>${escapeHtml(item.description)}</small>
-      </button>`).join('');
-    document.querySelectorAll('[data-loot]').forEach(button => {
-      button.onclick = () => this.takeLoot(button.dataset.loot);
-    });
+    this.pendingLoot = { options: RNG.shuffle(pool).slice(0, 3).map(([id]) => id), replacing: null };
+    this.renderLootChoices();
     this.renderSafeRoom();
   },
 
-  takeLoot(id) {
-    const definition = ITEMS[id];
-    if (!definition) return;
-    const existing = this.inventory.find(item => item.id === id);
-    const charges = this.classId === 'trapper' ? 2 : 1;
-    if (existing) existing.charges += charges;
-    else {
-      if (this.inventory.length >= 3) this.inventory.shift();
-      this.inventory.push({ id, ...definition, charges });
+  // Shows the pending box choice, or the replace prompt once a new item meets a full inventory.
+  renderLootChoices() {
+    const pending = this.pendingLoot;
+    const panel = $('lootChoices');
+    if (!pending) {
+      panel.classList.add('hidden');
+      panel.innerHTML = '';
+      return;
     }
-    $('lootChoices').classList.add('hidden');
-    $('lootChoices').innerHTML = '';
-    this.say('SYSTEM', `${definition.name} equipped. Warranty immediately void.`);
+    panel.classList.remove('hidden');
+    if (pending.replacing) {
+      const incoming = ITEMS[pending.replacing];
+      panel.innerHTML = this.inventory.map((item, slot) => `
+        <button class="loot-card" data-replace="${slot}">
+          <b>REPLACE ${escapeHtml(item.name)}</b><span>${escapeHtml(item.icon)}</span><small>for ${escapeHtml(incoming.name)}</small>
+        </button>`).join('') + `
+        <button class="loot-card" data-discard="1">
+          <b>DISCARD NEW</b><span>${escapeHtml(incoming.icon)}</span><small>${escapeHtml(incoming.name)} is lost</small>
+        </button>`;
+    } else {
+      panel.innerHTML = pending.options.map(id => `
+        <button class="loot-card" data-loot="${escapeHtml(id)}">
+          <b>${escapeHtml(ITEMS[id].name)}</b><span>${escapeHtml(ITEMS[id].icon)}</span><small>${escapeHtml(ITEMS[id].description)}</small>
+        </button>`).join('') + `
+        <button class="loot-card" data-discard="1">
+          <b>DISCARD</b><span>✕</span><small>Skip all three. The box is spent.</small>
+        </button>`;
+    }
+    document.querySelectorAll('[data-loot]').forEach(button => { button.onclick = () => this.takeLoot(button.dataset.loot); });
+    document.querySelectorAll('[data-replace]').forEach(button => { button.onclick = () => this.replaceItem(Number(button.dataset.replace)); });
+    document.querySelectorAll('[data-discard]').forEach(button => { button.onclick = () => this.discardLoot(); });
+  },
+
+  finishLoot() {
+    this.pendingLoot = null;
+    this.renderLootChoices();
     this.renderSafeRoom();
     this.updateHud();
   },
 
+  takeLoot(id) {
+    const pending = this.pendingLoot;
+    if (!pending || pending.replacing || !pending.options.includes(id)) return;
+    const definition = ITEMS[id];
+    const existing = this.inventory.find(item => item.id === id);
+    const charges = this.classId === 'trapper' ? 2 : 1;
+    if (existing) existing.charges += charges;
+    else if (this.inventory.length >= 3) {
+      pending.replacing = id;
+      this.renderLootChoices();
+      return;
+    } else this.inventory.push({ id, ...definition, charges });
+    this.say('SYSTEM', `${definition.name} equipped. Warranty immediately void.`);
+    this.finishLoot();
+  },
+
+  replaceItem(slot) {
+    const pending = this.pendingLoot;
+    if (!pending || !pending.replacing || !this.inventory[slot]) return;
+    const id = pending.replacing;
+    const charges = this.classId === 'trapper' ? 2 : 1;
+    this.inventory[slot] = { id, ...ITEMS[id], charges };
+    this.say('SYSTEM', `${ITEMS[id].name} equipped. Warranty immediately void.`);
+    this.finishLoot();
+  },
+
+  discardLoot() {
+    if (!this.pendingLoot) return;
+    this.say('SYSTEM', 'Loot declined. The System files this under cowardice.');
+    this.finishLoot();
+  },
+
   leaveSafeRoom() {
-    if (this.state !== 'SAFE') return;
+    if (this.state !== 'SAFE' || this.pendingLoot) return;
     const after = this.afterSafe;
     if (after === 'floor') this.showStairs();
     else if (after === 'boss') this.queueInterlude('boss');
