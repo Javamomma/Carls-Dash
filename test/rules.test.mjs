@@ -126,3 +126,42 @@ test('grease: a greased ground hazard changes teams', () => {
   assert.equal(log.friendly, true);
   assert.equal(game.greaseReady, false);
 });
+
+// Collects the cart through the real pickup path and returns the game.
+function collectCart(game) {
+  game.spawnRoomEvent([0, 'vehicle']);
+  const cart = game.pickups.find(pickup => pickup.type === 'vehicle');
+  cart.x = game.player.x;
+  cart.y = game.player.y;
+  step(game, 2);
+  return game;
+}
+
+test('riding the cart keeps drawing', () => {
+  const game = collectCart(quietRoom());
+  assert.ok(game.player.vehicleTime > 0, 'the pickup should put Carl in the cart');
+  for (let i = 0; i < 180; i++) {
+    if (i === 40) game.player.dash();
+    if (i === 100) game.player.jump();
+    game.update(DT);
+    game.draw();
+  }
+  assert.ok(game.player.vehicleTime > 0, 'Carl should still be riding after 3 seconds of drawing');
+});
+
+test('the frame loop survives the cart', () => {
+  const { game, clock } = loadGame({ seed: 7 });
+  game.roomEvents = [];
+  game.roomDuration = 1e9;
+  game.hazards = [];
+  game.features = [];
+  game.pickups = [];
+  collectCart(game);
+  assert.ok(game.player.vehicleTime > 0);
+  const before = game.time;
+  for (let i = 0; i < 120; i++) {
+    clock.frame();
+    assert.ok(clock.rafQueue.length > 0, `frame ${i} should schedule the next frame`);
+  }
+  assert.ok(game.time > before + 1, 'game time should keep advancing while riding');
+});

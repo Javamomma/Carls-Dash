@@ -772,10 +772,11 @@ class Player {
   }
   drawBody(x, y, sliding) {
     if (this.vehicleTime > 0) {
-      this.drawHero(x + 1, y - 2, false);
-      ctx.fillStyle = '#303943'; ctx.fillRect(x - 8, GROUND - 17, 37, 12);
-      ctx.fillStyle = '#91a4ad'; ctx.fillRect(x - 5, GROUND - 15, 31, 3);
-      ctx.fillStyle = '#0b0d12'; ctx.fillRect(x - 3, GROUND - 6, 8, 7); ctx.fillRect(x + 18, GROUND - 6, 8, 7);
+      const base = y + this.h; // the cart rides on Carl's feet line, so it follows jumps
+      this.drawRunner(x + 1, base - 37);
+      ctx.fillStyle = '#303943'; ctx.fillRect(x - 8, base - 17, 37, 12);
+      ctx.fillStyle = '#91a4ad'; ctx.fillRect(x - 5, base - 15, 31, 3);
+      ctx.fillStyle = '#0b0d12'; ctx.fillRect(x - 3, base - 6, 8, 7); ctx.fillRect(x + 18, base - 6, 8, 7);
       return;
     }
     if (sliding) {
@@ -787,8 +788,9 @@ class Player {
       this.drawDonut(x + 4, y - 7);
       return;
     }
-    const squash = Math.round(this.landSquash * 8);
-    y += squash;
+    this.drawRunner(x, y + Math.round(this.landSquash * 8));
+  }
+  drawRunner(x, y) {
     const step = Math.floor(this.runFrame) % 2;
     ctx.fillStyle = '#20191a'; ctx.fillRect(x + 4, y, 12, 5); ctx.fillRect(x + 3, y + 3, 4, 6);
     ctx.fillStyle = '#c88762'; ctx.fillRect(x + 6, y + 4, 10, 8); ctx.fillRect(x + 13, y + 9, 5, 3);
