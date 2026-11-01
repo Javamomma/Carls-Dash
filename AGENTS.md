@@ -33,11 +33,14 @@ Run this before you commit and make it pass:
 npm test
 ```
 
-After committing, the committed `index.html` must equal a fresh build:
+After committing, the committed `index.html` must equal a fresh build and the real-browser
+smoke check must pass:
 
 ```sh
-npm test && git diff --exit-code -- index.html
+npm test && git diff --exit-code -- index.html && python3.14 test/browser_smoke.py
 ```
+
+Run only one browser check at a time: other agents share this machine.
 
 ## Conventions
 - Comments: one sentence saying *why*. Don't narrate task history; git keeps it.
