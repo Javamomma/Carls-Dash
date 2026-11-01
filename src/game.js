@@ -964,7 +964,7 @@ const Game = {
     $('donutAdvice').textContent = RNG.pick(DONUT_LINES.door);
     $('doors').innerHTML = choices.map((route, index) => `
       <button class="door ${escapeHtml(route.kind)}" data-door="${index}">
-        <span class="door-icon">${route.icon}</span>
+        <span class="door-icon">${escapeHtml(route.icon)}</span>
         <b>${escapeHtml(route.title)}</b>
         <small>${escapeHtml(route.description)}</small>
         <em>${escapeHtml(route.reward)}</em>
@@ -1005,7 +1005,7 @@ const Game = {
       button.onclick = () => this.openBox(button.dataset.box);
     });
     $('safeInventory').innerHTML = this.inventory.length
-      ? this.inventory.map(item => `<div class="inventory-card"><b>${item.icon} ${escapeHtml(item.name)}</b>${item.charges} charge${item.charges === 1 ? '' : 's'}</div>`).join('')
+      ? this.inventory.map(item => `<div class="inventory-card"><b>${escapeHtml(item.icon)} ${escapeHtml(item.name)}</b>${item.charges} charge${item.charges === 1 ? '' : 's'}</div>`).join('')
       : '<p>Inventory empty. Carl has pockets but no dignity.</p>';
     $('healBtn').disabled = this.healUsed || this.hp >= this.maxHp || this.viewers < 100;
     $('healBtn').textContent = this.hp >= this.maxHp ? 'FULL HEALTH' : 'PATCH UP · 100 VIEWERS';
@@ -1131,7 +1131,7 @@ const Game = {
     this.showOverlay('sponsor');
     $('sponsorText').textContent = 'One contract per floor. Every effect is guaranteed, timed, and displayed during play.';
     const offers = RNG.shuffle(SPONSOR_OFFERS).slice(0, 2);
-    $('sponsorChoices').innerHTML = offers.map(offer => `<button data-offer="${offer.id}"><b>${offer.title}</b><span>${offer.now}</span><small>${offer.next}</small></button>`).join('');
+    $('sponsorChoices').innerHTML = offers.map(offer => `<button data-offer="${escapeHtml(offer.id)}"><b>${escapeHtml(offer.title)}</b><span>${escapeHtml(offer.now)}</span><small>${escapeHtml(offer.next)}</small></button>`).join('');
     document.querySelectorAll('[data-offer]').forEach(button => {
       button.onclick = () => this.acceptSponsor(button.dataset.offer);
     });
@@ -1299,8 +1299,8 @@ const Game = {
     this.state = 'CLASS';
     this.showOverlay('classSelect');
     $('classes').innerHTML = CLASSES.map(entry => `
-      <button class="loot-card" data-class="${entry.id}">
-        <b>${entry.name}</b><span>${entry.icon}</span><small>${entry.description}</small>
+      <button class="loot-card" data-class="${escapeHtml(entry.id)}">
+        <b>${escapeHtml(entry.name)}</b><span>${escapeHtml(entry.icon)}</span><small>${escapeHtml(entry.description)}</small>
       </button>`).join('');
     document.querySelectorAll('[data-class]').forEach(button => {
       button.onclick = () => this.selectClass(button.dataset.class);
@@ -1365,7 +1365,7 @@ const Game = {
   showDoorsFromExisting() {
     $('doors').innerHTML = this.doorChoices.map((route, index) => `
       <button class="door ${escapeHtml(route.kind)}" data-door="${index}">
-        <span class="door-icon">${route.icon}</span><b>${escapeHtml(route.title)}</b>
+        <span class="door-icon">${escapeHtml(route.icon)}</span><b>${escapeHtml(route.title)}</b>
         <small>${escapeHtml(route.description)}</small><em>${escapeHtml(route.reward)}</em>
       </button>`).join('');
     document.querySelectorAll('[data-door]').forEach(button => { button.onclick = () => this.chooseDoor(Number(button.dataset.door)); });
@@ -1650,7 +1650,7 @@ const Game = {
     $('donutBtn').disabled = this.donutCooldown > 0;
     $('itemRack').innerHTML = this.inventory.map((item, index) => `
       <button class="item-button" data-item="${index}" aria-label="Use ${escapeHtml(item.name)}">
-        <b>${item.icon}</b><span>${escapeHtml(item.name.split(' ')[0])} ×${item.charges}</span>
+        <b>${escapeHtml(item.icon)}</b><span>${escapeHtml(item.name.split(' ')[0])} ×${item.charges}</span>
       </button>`).join('');
     document.querySelectorAll('[data-item]').forEach(button => {
       button.onclick = event => { event.stopPropagation(); this.useItem(Number(button.dataset.item)); };

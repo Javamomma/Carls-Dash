@@ -420,3 +420,37 @@ test('Furnace Foreman waves keep their crusher, which arrives after the flame', 
   }
   assert.ok(visible, 'the crusher reaches the visible screen');
 });
+
+// Game text reaches innerHTML through escapeHtml, so markup in a table field renders as text.
+test('game text placed into innerHTML is escaped', () => {
+  const PAYLOAD = '<img src=x onerror=1>';
+  const ESCAPED = '&lt;img src=x onerror=1&gt;';
+  const { game, elements, sandbox } = loadGame({ seed: 7 });
+  const table = name => vm.runInContext(name, sandbox);
+  const html = id => elements.get(id).innerHTML;
+  const assertEscaped = (id, what) => {
+    assert.ok(!html(id).includes('<img'), `${what}: raw <img in #${id}`);
+    assert.ok(html(id).includes(ESCAPED), `${what}: escaped text missing from #${id}`);
+  };
+
+  table('ROUTES').forEach(route => { route.icon = PAYLOAD; });
+  game.showDoors();
+  assertEscaped('doors', 'route icon (showDoors)');
+  elements.get('doors').innerHTML = '';
+  game.showDoorsFromExisting();
+  assertEscaped('doors', 'route icon (showDoorsFromExisting)');
+
+  table('SPONSOR_OFFERS').forEach(offer => { offer.title = PAYLOAD; offer.now = PAYLOAD; offer.next = PAYLOAD; });
+  game.showSponsor();
+  assertEscaped('sponsorChoices', 'sponsor offer');
+
+  table('CLASSES').forEach(entry => { entry.name = PAYLOAD; entry.icon = PAYLOAD; entry.description = PAYLOAD; });
+  game.showClasses();
+  assertEscaped('classes', 'class card');
+
+  game.inventory = [{ id: 'x', name: 'Bomb', icon: PAYLOAD, charges: 1 }];
+  game.renderSafeRoom();
+  assertEscaped('safeInventory', 'safe-room item icon');
+  game.updateHud();
+  assertEscaped('itemRack', 'HUD item icon');
+});
