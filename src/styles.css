@@ -151,3 +151,7 @@ button:disabled { opacity:.42; cursor:not-allowed; }
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after { animation:none!important; transition:none!important; }
 }
+.loot-card[data-discard] { grid-column:1 / -1; min-height:0; padding:8px 6px; border-color:#c25a5a; }
+.loot-card[data-discard] b,.loot-card[data-discard] small { display:inline; }
+.loot-card[data-discard] span { display:none; }
+.loot-card[data-discard] small { margin-left:6px; }

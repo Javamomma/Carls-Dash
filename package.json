@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node --check src/game.js",
+    "playtest": "node scripts/playtest.mjs",
     "test": "npm run build && npm run check && node --test test/*.mjs"
   }
 }

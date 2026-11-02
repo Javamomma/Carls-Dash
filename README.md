@@ -58,6 +58,13 @@ test/                    Static and headless state-flow checks
 index.html               Generated GitHub Pages build
 ```
 
+Working notes:
+
+- Start from `main`. `parity/pitfall` (tag `v1-expedition-2026-09-03`) is the archived July line, not the base.
+- Edit `src/`, never `index.html` by hand; CI fails if the committed build is stale.
+- Run `npm test` before committing. Node 26, pinned in `.nvmrc` and used by CI.
+- Browser smoke check: `python3.14 test/browser_smoke.py`. On a new machine run `pip install -r requirements.txt` and `python -m playwright install chromium` first.
+
 `index.html` is committed intentionally so GitHub Pages can serve the game without a build service.
 
 ## Version history

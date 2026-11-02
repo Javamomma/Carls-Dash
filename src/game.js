@@ -127,22 +127,22 @@ const ROOM_BLUEPRINTS = [
   {
     id: 'canopy-swing', floor: 1, affinity: ['stunt', 'mystery'], name: 'CANOPY SWING', duration: 12.4,
     challenge: { kind: 'swing', target: 2, label: 'Catch 2 swing vines' },
-    events: [[.8, 'coins', 'low', 5], [1.7, 'vine'], [2.7, 'pit'], [3.7, 'coins', 'high', 7], [5.1, 'branch'], [6, 'vine'], [7, 'pit'], [8.2, 'goblin'], [9.3, 'coins', 'arc', 7], [10.1, 'log']],
+    events: [[.8, 'coins', 'low', 5], [1.7, 'vine'], [2.7, 'pit'], [3.7, 'coins', 'high', 7], [5.1, 'branch'], [6, 'vine'], [8.2, 'goblin'], [9.3, 'coins', 'arc', 7], [10.1, 'log']],
   },
   {
     id: 'goblin-market', floor: 1, affinity: ['mob', 'rescue'], name: 'GOBLIN MARKET CRASH', duration: 12.2,
     challenge: { kind: 'stomp', target: 3, label: 'Stomp 3 dungeon mobs' },
-    events: [[.9, 'goblin'], [1.8, 'coins', 'arc', 5], [3, 'snake'], [4, 'goblin'], [5.4, 'bounce'], [6.3, 'goblin'], [7.4, 'pit'], [8.4, 'goblin'], [9.4, 'coins', 'high', 6], [10.1, 'branch']],
+    events: [[.9, 'goblin'], [1.8, 'coins', 'arc', 5], [4, 'goblin'], [5.4, 'bounce'], [6.3, 'goblin'], [7.4, 'pit'], [8.4, 'goblin'], [9.4, 'coins', 'high', 6], [10.1, 'branch']],
   },
   {
     id: 'ruin-rails', floor: 1, affinity: ['supply', 'vault'], name: 'RUIN RAIL RELAY', duration: 12.5,
     challenge: { kind: 'grind', target: 3, label: 'Grind 3 rail sections' },
-    events: [[.8, 'rail'], [1.2, 'coins', 'high', 8], [3, 'pit'], [4, 'rail'], [4.4, 'coins', 'high', 7], [6.4, 'branch'], [7.2, 'rail'], [8.1, 'coins', 'high', 6], [9.4, 'log'], [10.2, 'pit']],
+    events: [[.8, 'rail'], [1.2, 'coins', 'high', 8], [3, 'pit'], [4, 'rail'], [4.4, 'coins', 'high', 7], [7.2, 'rail'], [8.1, 'coins', 'high', 6], [9.4, 'log']],
   },
   {
     id: 'foundry-pulse', floor: 2, affinity: ['supply', 'stunt', 'rescue'], name: 'FOUNDRY PULSE', duration: 12.5,
     challenge: { kind: 'near', target: 3, label: 'Thread 3 danger-close gaps' },
-    events: [[.8, 'flame'], [1.8, 'coins', 'arc', 6], [2.9, 'crusher'], [4.1, 'flame'], [5, 'bounce'], [5.9, 'crusher'], [7, 'coins', 'high', 7], [8.2, 'flame'], [9.2, 'pit'], [10.1, 'crusher']],
+    events: [[.8, 'flame'], [1.8, 'coins', 'arc', 6], [2.9, 'crusher'], [4.1, 'flame'], [5, 'bounce'], [6.6, 'crusher'], [7, 'coins', 'high', 7], [8.2, 'flame'], [9.2, 'pit'], [10.1, 'crusher']],
   },
   {
     id: 'slag-cart', floor: 2, affinity: ['mob', 'vault', 'mystery'], name: 'SLAG CART SMASH', duration: 12.6,
@@ -152,7 +152,7 @@ const ROOM_BLUEPRINTS = [
   {
     id: 'coolant-conduit', floor: 2, affinity: ['supply', 'rescue', 'mystery'], name: 'COOLANT CONDUIT', duration: 12.7,
     challenge: { kind: 'grind', target: 2, label: 'Grind 2 pipe rails' },
-    events: [[.7, 'rail'], [1.2, 'coins', 'high', 7], [2.9, 'flame'], [4.1, 'bounce'], [5, 'crusher'], [6.1, 'rail'], [6.7, 'coins', 'high', 8], [8.5, 'flame'], [9.5, 'pit'], [10.4, 'log']],
+    events: [[.7, 'rail'], [1.2, 'coins', 'high', 7], [2.9, 'flame'], [4.1, 'bounce'], [5.6, 'crusher'], [6.1, 'rail'], [6.7, 'coins', 'high', 8], [8.5, 'flame'], [9.5, 'pit'], [10.4, 'log']],
   },
   {
     id: 'blackout-motes', floor: 3, affinity: ['supply', 'rescue', 'mystery'], name: 'BLACKOUT MOTE RUN', duration: 12.8,
@@ -450,10 +450,11 @@ class Player {
   }
   drawBody(x, y, sliding) {
     if (this.vehicleTime > 0) {
-      this.drawHero(x + 1, y - 2, false);
-      ctx.fillStyle = '#303943'; ctx.fillRect(x - 8, GROUND - 17, 37, 12);
-      ctx.fillStyle = '#91a4ad'; ctx.fillRect(x - 5, GROUND - 15, 31, 3);
-      ctx.fillStyle = '#0b0d12'; ctx.fillRect(x - 3, GROUND - 6, 8, 7); ctx.fillRect(x + 18, GROUND - 6, 8, 7);
+      const base = y + this.h; // the cart rides on Carl's feet line, so it follows jumps
+      this.drawRunner(x + 1, base - 37);
+      ctx.fillStyle = '#303943'; ctx.fillRect(x - 8, base - 17, 37, 12);
+      ctx.fillStyle = '#91a4ad'; ctx.fillRect(x - 5, base - 15, 31, 3);
+      ctx.fillStyle = '#0b0d12'; ctx.fillRect(x - 3, base - 6, 8, 7); ctx.fillRect(x + 18, base - 6, 8, 7);
       return;
     }
     if (sliding) {
@@ -465,8 +466,9 @@ class Player {
       this.drawDonut(x + 4, y - 7);
       return;
     }
-    const squash = Math.round(this.landSquash * 8);
-    y += squash;
+    this.drawRunner(x, y + Math.round(this.landSquash * 8));
+  }
+  drawRunner(x, y) {
     const step = Math.floor(this.runFrame) % 2;
     ctx.fillStyle = '#20191a'; ctx.fillRect(x + 4, y, 12, 5); ctx.fillRect(x + 3, y + 3, 4, 6);
     ctx.fillStyle = '#c88762'; ctx.fillRect(x + 6, y + 4, 10, 8); ctx.fillRect(x + 13, y + 9, 5, 3);
@@ -513,6 +515,7 @@ const Game = {
   particles: [],
   inventory: [],
   boxes: [],
+  pendingLoot: null,
   runAchievements: new Set(),
   achievementQueue: [],
   player: null,
@@ -527,14 +530,14 @@ const Game = {
     Object.assign(this, {
       state: 'RUNNING', time: 0, floor: 1, roomsOnFloor: 0, roomsTotal: 0,
       viewers: 0, displayViewers: 0, hp: 4, maxHp: 4, speed: 122,
-      hazards: [], features: [], pickups: [], particles: [], inventory: [], boxes: [],
+      hazards: [], features: [], pickups: [], particles: [], inventory: [], boxes: [], pendingLoot: null,
       runAchievements: new Set(), achievementQueue: [], viewerMilestones: new Set(), classId: null,
       donutMode: 'ZAP', donutCooldown: 0, nearMisses: 0, combo: 0, comboTimer: 0,
       teamwork: 0, teamBoost: 0, allyShield: 0, magnetTime: 0, scoutTime: 0,
       slowTime: 0, greaseReady: false, trapArmed: false, greaseKills: 0,
       sponsorModifier: null, sponsorOfferedFloor: 0, challengesCompleted: 0,
       blueprintHistory: [],
-      daily, shake: 0, flash: 0, currentRoute: ROUTES[0], afterSafe: 'door',
+      diveActive: false, daily, shake: 0, flash: 0, currentRoute: ROUTES[0], afterSafe: 'door',
       achievementShowing: false,
     });
     $('achievement').classList.remove('on');
@@ -735,8 +738,9 @@ const Game = {
     }
   },
 
-  spawnHazard(type, x) {
-    const base = { type, x, on: true, passed: false, friendly: false, age: 0, vx: 0 };
+  spawnHazard(type, x, overrides = {}) {
+    // telegraph defaults to 0 here so every hazard has a numeric warning time the collision gate can read.
+    const base = { type, x, on: true, passed: false, friendly: false, age: 0, vx: 0, telegraph: 0 };
     const shapes = {
       log: { y: GROUND - 13, w: 25, h: 13 }, snake: { y: GROUND - 8, w: 18, h: 8 },
       pit: { y: GROUND - 3, w: 31, h: 7 }, branch: { y: GROUND - 30, w: 28, h: 14 },
@@ -746,7 +750,9 @@ const Game = {
       vine: { y: GROUND - 12, w: 13, h: 12 }, goblin: { y: GROUND - 19, w: 17, h: 19 },
       hunterShot: { y: GROUND - 40, w: 20, h: 5 },
     };
-    this.hazards.push({ ...base, ...(shapes[type] || shapes.log) });
+    const hazard = { ...base, ...(shapes[type] || shapes.log), ...overrides };
+    this.hazards.push(hazard);
+    return hazard;
   },
 
   updateHazards(dt) {
@@ -806,7 +812,7 @@ const Game = {
         const activeMove = this.player.airborne || this.player.slideTime > 0 || this.player.dashTime > 0;
         if (activeMove) this.nearMiss(hazard);
       }
-      if (hazard.x < -60 || hazard.x > W + 100) hazard.on = false;
+      if (hazard.x < -60 || (hazard.friendly && hazard.x > W + 100)) hazard.on = false;
     }
     this.hazards = this.hazards.filter(item => item.on);
   },
@@ -951,13 +957,14 @@ const Game = {
     this.state = 'CHOICE';
     this.showOverlay('doorChoice');
     const pool = RNG.shuffle(ROUTES);
-    let choices = pool.slice(0, 2);
-    if (choices[0].id === choices[1].id) choices[1] = ROUTES[(ROUTES.indexOf(choices[0]) + 1) % ROUTES.length];
+    // Copies, so Donut's scouting edits the door and never the shared ROUTES table.
+    let choices = pool.slice(0, 2).map(route => ({ ...route }));
+    if (choices[0].id === choices[1].id) choices[1] = { ...ROUTES[(ROUTES.findIndex(route => route.id === choices[0].id) + 1) % ROUTES.length] };
     this.doorChoices = choices;
     $('donutAdvice').textContent = RNG.pick(DONUT_LINES.door);
     $('doors').innerHTML = choices.map((route, index) => `
       <button class="door ${escapeHtml(route.kind)}" data-door="${index}">
-        <span class="door-icon">${route.icon}</span>
+        <span class="door-icon">${escapeHtml(route.icon)}</span>
         <b>${escapeHtml(route.title)}</b>
         <small>${escapeHtml(route.description)}</small>
         <em>${escapeHtml(route.reward)}</em>
@@ -982,8 +989,8 @@ const Game = {
     this.healUsed = false;
     this.showOverlay('safeRoom');
     $('safeDialogue').textContent = RNG.pick(DONUT_LINES.safe);
-    $('lootChoices').classList.add('hidden');
-    $('lootChoices').innerHTML = '';
+    this.pendingLoot = null;
+    this.renderLootChoices();
     this.renderSafeRoom();
   },
 
@@ -992,20 +999,22 @@ const Game = {
     this.boxes.forEach(tier => { counts[tier] += 1; });
     $('boxes').innerHTML = this.boxes.length
       ? ['bronze', 'silver', 'gold'].filter(tier => counts[tier]).map(tier =>
-        `<button class="box-button ${tier}" data-box="${tier}">${tier.toUpperCase()} BOX ×${counts[tier]}</button>`).join('')
+        `<button class="box-button ${tier}" data-box="${tier}"${this.pendingLoot ? ' disabled' : ''}>${tier.toUpperCase()} BOX ×${counts[tier]}</button>`).join('')
       : '<p>No boxes. The System is withholding affection.</p>';
     document.querySelectorAll('[data-box]').forEach(button => {
       button.onclick = () => this.openBox(button.dataset.box);
     });
     $('safeInventory').innerHTML = this.inventory.length
-      ? this.inventory.map(item => `<div class="inventory-card"><b>${item.icon} ${escapeHtml(item.name)}</b>${item.charges} charge${item.charges === 1 ? '' : 's'}</div>`).join('')
+      ? this.inventory.map(item => `<div class="inventory-card"><b>${escapeHtml(item.icon)} ${escapeHtml(item.name)}</b>${item.charges} charge${item.charges === 1 ? '' : 's'}</div>`).join('')
       : '<p>Inventory empty. Carl has pockets but no dignity.</p>';
     $('healBtn').disabled = this.healUsed || this.hp >= this.maxHp || this.viewers < 100;
     $('healBtn').textContent = this.hp >= this.maxHp ? 'FULL HEALTH' : 'PATCH UP · 100 VIEWERS';
+    $('leaveSafeBtn').disabled = Boolean(this.pendingLoot);
     $('leaveSafeBtn').textContent = this.afterSafe === 'floor' ? 'DESCEND A FLOOR' : this.afterSafe === 'boss' ? 'FACE THE BOSS' : 'BACK TO THE DUNGEON';
   },
 
   openBox(tier) {
+    if (this.pendingLoot) return;
     const index = this.boxes.indexOf(tier);
     if (index < 0) return;
     this.boxes.splice(index, 1);
@@ -1013,37 +1022,85 @@ const Game = {
     const rarityMax = tier === 'gold' ? 3 : tier === 'silver' ? 2 : 1;
     let pool = Object.entries(ITEMS).filter(([, item]) => item.rarity <= rarityMax);
     if (tier === 'gold') pool = Object.entries(ITEMS).filter(([, item]) => item.rarity >= 2);
-    const options = RNG.shuffle(pool).slice(0, 3);
-    $('lootChoices').classList.remove('hidden');
-    $('lootChoices').innerHTML = options.map(([id, item]) => `
-      <button class="loot-card" data-loot="${id}">
-        <b>${escapeHtml(item.name)}</b><span>${item.icon}</span><small>${escapeHtml(item.description)}</small>
-      </button>`).join('');
-    document.querySelectorAll('[data-loot]').forEach(button => {
-      button.onclick = () => this.takeLoot(button.dataset.loot);
-    });
+    this.pendingLoot = { options: RNG.shuffle(pool).slice(0, 3).map(([id]) => id), replacing: null };
+    this.renderLootChoices();
     this.renderSafeRoom();
   },
 
-  takeLoot(id) {
-    const definition = ITEMS[id];
-    if (!definition) return;
-    const existing = this.inventory.find(item => item.id === id);
-    const charges = this.classId === 'trapper' ? 2 : 1;
-    if (existing) existing.charges += charges;
-    else {
-      if (this.inventory.length >= 3) this.inventory.shift();
-      this.inventory.push({ id, ...definition, charges });
+  // Shows the pending box choice, or the replace prompt once a new item meets a full inventory.
+  renderLootChoices() {
+    const pending = this.pendingLoot;
+    const panel = $('lootChoices');
+    if (!pending) {
+      panel.classList.add('hidden');
+      panel.innerHTML = '';
+      return;
     }
-    $('lootChoices').classList.add('hidden');
-    $('lootChoices').innerHTML = '';
-    this.say('SYSTEM', `${definition.name} equipped. Warranty immediately void.`);
+    panel.classList.remove('hidden');
+    if (pending.replacing) {
+      const incoming = ITEMS[pending.replacing];
+      panel.innerHTML = this.inventory.map((item, slot) => `
+        <button class="loot-card" data-replace="${slot}">
+          <b>REPLACE ${escapeHtml(item.name)}</b><span>${escapeHtml(item.icon)}</span><small>for ${escapeHtml(incoming.name)}</small>
+        </button>`).join('') + `
+        <button class="loot-card" data-discard="1">
+          <b>DISCARD NEW</b><span>${escapeHtml(incoming.icon)}</span><small>${escapeHtml(incoming.name)} is lost</small>
+        </button>`;
+    } else {
+      panel.innerHTML = pending.options.map(id => `
+        <button class="loot-card" data-loot="${escapeHtml(id)}">
+          <b>${escapeHtml(ITEMS[id].name)}</b><span>${escapeHtml(ITEMS[id].icon)}</span><small>${escapeHtml(ITEMS[id].description)}</small>
+        </button>`).join('') + `
+        <button class="loot-card" data-discard="1">
+          <b>DISCARD</b><span>✕</span><small>Skip all three. The box is spent.</small>
+        </button>`;
+    }
+    document.querySelectorAll('[data-loot]').forEach(button => { button.onclick = () => this.takeLoot(button.dataset.loot); });
+    document.querySelectorAll('[data-replace]').forEach(button => { button.onclick = () => this.replaceItem(Number(button.dataset.replace)); });
+    document.querySelectorAll('[data-discard]').forEach(button => { button.onclick = () => this.discardLoot(); });
+  },
+
+  finishLoot() {
+    this.pendingLoot = null;
+    this.renderLootChoices();
     this.renderSafeRoom();
     this.updateHud();
   },
 
+  takeLoot(id) {
+    const pending = this.pendingLoot;
+    if (!pending || pending.replacing || !pending.options.includes(id)) return;
+    const definition = ITEMS[id];
+    const existing = this.inventory.find(item => item.id === id);
+    const charges = this.classId === 'trapper' ? 2 : 1;
+    if (existing) existing.charges += charges;
+    else if (this.inventory.length >= 3) {
+      pending.replacing = id;
+      this.renderLootChoices();
+      return;
+    } else this.inventory.push({ id, ...definition, charges });
+    this.say('SYSTEM', `${definition.name} equipped. Warranty immediately void.`);
+    this.finishLoot();
+  },
+
+  replaceItem(slot) {
+    const pending = this.pendingLoot;
+    if (!pending || !pending.replacing || !this.inventory[slot]) return;
+    const id = pending.replacing;
+    const charges = this.classId === 'trapper' ? 2 : 1;
+    this.inventory[slot] = { id, ...ITEMS[id], charges };
+    this.say('SYSTEM', `${ITEMS[id].name} equipped. Warranty immediately void.`);
+    this.finishLoot();
+  },
+
+  discardLoot() {
+    if (!this.pendingLoot) return;
+    this.say('SYSTEM', 'Loot declined. The System files this under cowardice.');
+    this.finishLoot();
+  },
+
   leaveSafeRoom() {
-    if (this.state !== 'SAFE') return;
+    if (this.state !== 'SAFE' || this.pendingLoot) return;
     const after = this.afterSafe;
     if (after === 'floor') this.showStairs();
     else if (after === 'boss') this.queueInterlude('boss');
@@ -1074,7 +1131,7 @@ const Game = {
     this.showOverlay('sponsor');
     $('sponsorText').textContent = 'One contract per floor. Every effect is guaranteed, timed, and displayed during play.';
     const offers = RNG.shuffle(SPONSOR_OFFERS).slice(0, 2);
-    $('sponsorChoices').innerHTML = offers.map(offer => `<button data-offer="${offer.id}"><b>${offer.title}</b><span>${offer.now}</span><small>${offer.next}</small></button>`).join('');
+    $('sponsorChoices').innerHTML = offers.map(offer => `<button data-offer="${escapeHtml(offer.id)}"><b>${escapeHtml(offer.title)}</b><span>${escapeHtml(offer.now)}</span><small>${escapeHtml(offer.next)}</small></button>`).join('');
     document.querySelectorAll('[data-offer]').forEach(button => {
       button.onclick = () => this.acceptSponsor(button.dataset.offer);
     });
@@ -1129,6 +1186,11 @@ const Game = {
 
   updateBoss(dt) {
     const boss = this.boss;
+    if (boss?.defeated && boss.exitTimer > 0) {
+      boss.exitTimer -= dt;
+      if (boss.exitTimer <= 0) this.showSafeRoom('floor');
+      return;
+    }
     if (!boss || boss.defeated) return;
     boss.timer -= dt;
     boss.modeTimer -= dt;
@@ -1155,7 +1217,7 @@ const Game = {
       this.bossWave += 1;
       if (boss.kind === 1) {
         this.spawnHazard('flame', W + 8);
-        this.spawnHazard('crusher', W + 78);
+        this.spawnHazard('crusher', W + 150);
         const high = this.bossWave % 2;
         this.pickups.push({ type: 'coolant', x: W + 48, y: high ? GROUND - 88 : GROUND - 22, w: 9, h: 13, on: true, spin: 0 });
         boss.timer = 4.4;
@@ -1172,8 +1234,7 @@ const Game = {
         boss.timer = 4.3;
         this.say('SYSTEM', `TRACK SWITCH ${this.bossObjective + 1}/4 · CART CONTROL RECOMMENDED.`);
       } else {
-        const shot = { type: 'hunterShot', x: W + 5, y: Math.max(150, this.player.y + 10), w: 24, h: 5, on: true, passed: false, friendly: false, age: 0, vx: 0 };
-        this.hazards.push(shot);
+        this.spawnHazard('hunterShot', W + 5, { y: Math.max(150, this.player.y + 10), w: 24, h: 5 });
         boss.vulnerable = 1.25;
         boss.timer = 3.5;
         this.say('SYSTEM', 'HUNTER RELOADING · CLOSE THE DISTANCE!');
@@ -1218,9 +1279,8 @@ const Game = {
     if (this.bossNoHit) this.unlockAchievement('bossClean');
     Audio.achievement();
     this.say('ANNOUNCER', `${this.boss.name} has been reassigned to post-production.`);
-    window.setTimeout(() => {
-      if (this.state === 'BOSS') this.showSafeRoom('floor');
-    }, 1500);
+    // Counted on the game clock (see updateBoss) so pausing can't strand or skip the exit.
+    this.boss.exitTimer = 1.5;
   },
 
   advanceFloor() {
@@ -1239,8 +1299,8 @@ const Game = {
     this.state = 'CLASS';
     this.showOverlay('classSelect');
     $('classes').innerHTML = CLASSES.map(entry => `
-      <button class="loot-card" data-class="${entry.id}">
-        <b>${entry.name}</b><span>${entry.icon}</span><small>${entry.description}</small>
+      <button class="loot-card" data-class="${escapeHtml(entry.id)}">
+        <b>${escapeHtml(entry.name)}</b><span>${escapeHtml(entry.icon)}</span><small>${escapeHtml(entry.description)}</small>
       </button>`).join('');
     document.querySelectorAll('[data-class]').forEach(button => {
       button.onclick = () => this.selectClass(button.dataset.class);
@@ -1305,7 +1365,7 @@ const Game = {
   showDoorsFromExisting() {
     $('doors').innerHTML = this.doorChoices.map((route, index) => `
       <button class="door ${escapeHtml(route.kind)}" data-door="${index}">
-        <span class="door-icon">${route.icon}</span><b>${escapeHtml(route.title)}</b>
+        <span class="door-icon">${escapeHtml(route.icon)}</span><b>${escapeHtml(route.title)}</b>
         <small>${escapeHtml(route.description)}</small><em>${escapeHtml(route.reward)}</em>
       </button>`).join('');
     document.querySelectorAll('[data-door]').forEach(button => { button.onclick = () => this.chooseDoor(Number(button.dataset.door)); });
@@ -1373,7 +1433,7 @@ const Game = {
     this.roomStats.damage += 1;
     this.bossNoHit = false;
     this.combo = 0;
-    this.player.invincible = 1.35;
+    this.player.invincible = 2;
     this.player.vy = -230;
     this.player.airborne = true;
     this.shake = .85;
@@ -1590,7 +1650,7 @@ const Game = {
     $('donutBtn').disabled = this.donutCooldown > 0;
     $('itemRack').innerHTML = this.inventory.map((item, index) => `
       <button class="item-button" data-item="${index}" aria-label="Use ${escapeHtml(item.name)}">
-        <b>${item.icon}</b><span>${escapeHtml(item.name.split(' ')[0])} ×${item.charges}</span>
+        <b>${escapeHtml(item.icon)}</b><span>${escapeHtml(item.name.split(' ')[0])} ×${item.charges}</span>
       </button>`).join('');
     document.querySelectorAll('[data-item]').forEach(button => {
       button.onclick = event => { event.stopPropagation(); this.useItem(Number(button.dataset.item)); };
@@ -1860,9 +1920,10 @@ const Input = {
       else Game.player.jump();
     });
     addEventListener('keydown', event => {
-      if (event.code === 'Space') { event.preventDefault(); Audio.init(); Game.player.jump(); }
-      if (event.code === 'ArrowDown') { event.preventDefault(); Game.player.dive(); }
-      if (event.code === 'ArrowUp') { event.preventDefault(); Game.player.dash(); }
+      const playing = ['RUNNING', 'BOSS'].includes(Game.state);
+      if (event.code === 'Space') { event.preventDefault(); if (playing) { Audio.init(); Game.player.jump(); } }
+      if (event.code === 'ArrowDown') { event.preventDefault(); if (playing) Game.player.dive(); }
+      if (event.code === 'ArrowUp') { event.preventDefault(); if (playing) Game.player.dash(); }
       if (event.code === 'ArrowLeft' && Game.state === 'CHOICE') Game.chooseDoor(0);
       if (event.code === 'ArrowRight' && Game.state === 'CHOICE') Game.chooseDoor(1);
       if (event.key.toLowerCase() === 'd') Game.useDonut();
@@ -1891,7 +1952,7 @@ $('pauseBtn').onclick = event => { event.stopPropagation(); Game.pause(); };
 $('resumeBtn').onclick = () => Game.resume();
 $('restartBtn').onclick = () => Game.start(Game.daily);
 $('quitBtn').onclick = () => Game.quit();
-$('retryBtn').onclick = () => Game.start(false);
+$('retryBtn').onclick = () => Game.start(Game.daily);
 $('overTitleBtn').onclick = () => Game.showTitle();
 $('healBtn').onclick = () => Game.safeHeal();
 $('leaveSafeBtn').onclick = () => Game.leaveSafeRoom();
